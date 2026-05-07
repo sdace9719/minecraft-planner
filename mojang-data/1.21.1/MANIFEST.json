@@ -1,0 +1,11 @@
+{
+  "source_repo": "https://github.com/misode/mcmeta",
+  "source_ref": "07ea787cb46c9861cc7ca3613d1d55d5bcdeb8e3",
+  "included_paths": [
+    "data/minecraft/recipe",
+    "data/minecraft/tags/item",
+    "data/minecraft/worldgen/placed_feature",
+    "data/minecraft/worldgen/configured_feature",
+    "data/minecraft/worldgen/biome"
+  ]
+}

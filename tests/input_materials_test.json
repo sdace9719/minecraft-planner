@@ -1,0 +1,78 @@
+[
+  {
+    "name": "oak_planks",
+    "quantity": 512
+  },
+  {
+    "name": "stone",
+    "quantity": 256
+  },
+  {
+    "name": "glass",
+    "quantity": 160
+  },
+  {
+    "name": "white_concrete_powder",
+    "quantity": 300
+  },
+  {
+    "name": "spruce_stairs",
+    "quantity": 124
+  },
+  {
+    "name": "smooth_stone",
+    "quantity": 64
+  },
+  {
+    "name": "terracotta",
+    "quantity": 82
+  },
+  {
+    "name": "bricks",
+    "quantity": 48
+  },
+  {
+    "name": "deepslate",
+    "quantity": 400
+  },
+  {
+    "name": "oak_slab",
+    "quantity": 96
+  },
+  {
+    "name": "stripped_spruce_log",
+    "quantity": 32
+  },
+  {
+    "name": "sand",
+    "quantity": 200
+  },
+  {
+    "name": "gravel",
+    "quantity": 150
+  },
+  {
+    "name": "dirt",
+    "quantity": 128
+  },
+  {
+    "name": "iron_ingot",
+    "quantity": 42
+  },
+  {
+    "name": "copper_block",
+    "quantity": 24
+  },
+  {
+    "name": "white_wool",
+    "quantity": 16
+  },
+  {
+    "name": "clay_ball",
+    "quantity": 60
+  },
+  {
+    "name": "andesite",
+    "quantity": 88
+  }
+]

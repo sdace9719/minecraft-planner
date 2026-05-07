@@ -1,0 +1,26 @@
+{
+    "wooden": {
+        "speed": 2.0,
+        "durability": 59,
+        "blocks_to_break": 0
+    },
+    "stone": {
+        "speed": 4.0,
+        "durability": 131,
+        "blocks_to_break": 0
+    },
+    "iron": {
+        "speed": 6.0,
+        "durability": 250,
+        "blocks_to_break": 180,
+        "junk_block": "cobblestone",
+        "vein_size": 2
+    },
+    "diamond": {
+        "speed": 8.0,
+        "durability": 1561,
+        "blocks_to_break": 600,
+        "junk_block": "cobbled_deepslate",
+        "vein_size": 3
+    }
+}

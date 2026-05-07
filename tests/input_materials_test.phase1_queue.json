@@ -1,0 +1,1730 @@
+[
+  {
+    "target_item": "oak_planks",
+    "target_quantity": 512,
+    "blueprint": [
+      {
+        "harvest": {
+          "hand_insta_harvest_possible": true,
+          "min_tier": "wooden",
+          "tool_class": "none"
+        },
+        "item": "oak_log",
+        "operation": "gather",
+        "prerequisites": [],
+        "source_blocks": [
+          "oak_log"
+        ],
+        "source_entities": [],
+        "source_structures": []
+      },
+      {
+        "ingredients": {
+          "oak_log": 1
+        },
+        "item": "oak_planks",
+        "operation": "craft",
+        "prerequisites": [
+          "oak_log"
+        ],
+        "recipe_type": "minecraft:crafting_shapeless",
+        "station": "player"
+      }
+    ]
+  },
+  {
+    "target_item": "stone",
+    "target_quantity": 256,
+    "blueprint": [
+      {
+        "harvest": {
+          "hand_insta_harvest_possible": true,
+          "min_tier": "wooden",
+          "tool_class": "none"
+        },
+        "item": "oak_log",
+        "operation": "gather",
+        "prerequisites": [],
+        "source_blocks": [
+          "oak_log"
+        ],
+        "source_entities": [],
+        "source_structures": []
+      },
+      {
+        "ingredients": {
+          "oak_log": 1
+        },
+        "item": "oak_planks",
+        "operation": "craft",
+        "prerequisites": [
+          "oak_log"
+        ],
+        "recipe_type": "minecraft:crafting_shapeless",
+        "station": "player"
+      },
+      {
+        "ingredients": {
+          "oak_planks": 4
+        },
+        "item": "crafting_table",
+        "operation": "craft",
+        "prerequisites": [
+          "oak_planks"
+        ],
+        "recipe_type": "minecraft:crafting_shaped",
+        "station": "player"
+      },
+      {
+        "ingredients": {
+          "oak_planks": 2
+        },
+        "item": "stick",
+        "operation": "craft",
+        "prerequisites": [
+          "oak_planks"
+        ],
+        "recipe_type": "minecraft:crafting_shaped",
+        "station": "player"
+      },
+      {
+        "ingredients": {
+          "oak_planks": 3,
+          "stick": 2
+        },
+        "item": "wooden_pickaxe",
+        "operation": "craft",
+        "prerequisites": [
+          "oak_planks",
+          "stick",
+          "crafting_table"
+        ],
+        "recipe_type": "minecraft:crafting_shaped",
+        "station": "crafting_table"
+      },
+      {
+        "harvest": {
+          "hand_insta_harvest_possible": false,
+          "min_tier": "wooden",
+          "tool_class": "pickaxe"
+        },
+        "item": "cobblestone",
+        "operation": "mine",
+        "prerequisites": [
+          "wooden_pickaxe"
+        ],
+        "source_blocks": [
+          "cobblestone",
+          "infested_cobblestone",
+          "stone"
+        ],
+        "source_entities": [],
+        "source_structures": []
+      },
+      {
+        "ingredients": {
+          "cobblestone": 8
+        },
+        "item": "furnace",
+        "operation": "craft",
+        "prerequisites": [
+          "cobblestone",
+          "crafting_table"
+        ],
+        "recipe_type": "minecraft:crafting_shaped",
+        "station": "crafting_table"
+      },
+      {
+        "ingredients": {
+          "cobblestone": 1
+        },
+        "item": "stone",
+        "operation": "smelt",
+        "prerequisites": [
+          "cobblestone",
+          "furnace"
+        ],
+        "recipe_type": "minecraft:smelting",
+        "station": "furnace"
+      }
+    ]
+  },
+  {
+    "target_item": "glass",
+    "target_quantity": 160,
+    "blueprint": [
+      {
+        "harvest": {
+          "hand_insta_harvest_possible": true,
+          "min_tier": "wooden",
+          "tool_class": "none"
+        },
+        "item": "oak_log",
+        "operation": "gather",
+        "prerequisites": [],
+        "source_blocks": [
+          "oak_log"
+        ],
+        "source_entities": [],
+        "source_structures": []
+      },
+      {
+        "ingredients": {
+          "oak_log": 1
+        },
+        "item": "oak_planks",
+        "operation": "craft",
+        "prerequisites": [
+          "oak_log"
+        ],
+        "recipe_type": "minecraft:crafting_shapeless",
+        "station": "player"
+      },
+      {
+        "ingredients": {
+          "oak_planks": 4
+        },
+        "item": "crafting_table",
+        "operation": "craft",
+        "prerequisites": [
+          "oak_planks"
+        ],
+        "recipe_type": "minecraft:crafting_shaped",
+        "station": "player"
+      },
+      {
+        "ingredients": {
+          "oak_planks": 2
+        },
+        "item": "stick",
+        "operation": "craft",
+        "prerequisites": [
+          "oak_planks"
+        ],
+        "recipe_type": "minecraft:crafting_shaped",
+        "station": "player"
+      },
+      {
+        "ingredients": {
+          "oak_planks": 3,
+          "stick": 2
+        },
+        "item": "wooden_pickaxe",
+        "operation": "craft",
+        "prerequisites": [
+          "oak_planks",
+          "stick",
+          "crafting_table"
+        ],
+        "recipe_type": "minecraft:crafting_shaped",
+        "station": "crafting_table"
+      },
+      {
+        "harvest": {
+          "hand_insta_harvest_possible": false,
+          "min_tier": "wooden",
+          "tool_class": "pickaxe"
+        },
+        "item": "cobblestone",
+        "operation": "mine",
+        "prerequisites": [
+          "wooden_pickaxe"
+        ],
+        "source_blocks": [
+          "cobblestone",
+          "infested_cobblestone",
+          "stone"
+        ],
+        "source_entities": [],
+        "source_structures": []
+      },
+      {
+        "ingredients": {
+          "cobblestone": 8
+        },
+        "item": "furnace",
+        "operation": "craft",
+        "prerequisites": [
+          "cobblestone",
+          "crafting_table"
+        ],
+        "recipe_type": "minecraft:crafting_shaped",
+        "station": "crafting_table"
+      },
+      {
+        "harvest": {
+          "hand_insta_harvest_possible": true,
+          "min_tier": "wooden",
+          "tool_class": "none"
+        },
+        "item": "sand",
+        "operation": "gather",
+        "prerequisites": [],
+        "source_blocks": [
+          "sand"
+        ],
+        "source_entities": [],
+        "source_structures": []
+      },
+      {
+        "ingredients": {
+          "sand": 1
+        },
+        "item": "glass",
+        "operation": "smelt",
+        "prerequisites": [
+          "sand",
+          "furnace"
+        ],
+        "recipe_type": "minecraft:smelting",
+        "station": "furnace"
+      }
+    ]
+  },
+  {
+    "target_item": "white_concrete_powder",
+    "target_quantity": 300,
+    "blueprint": [
+      {
+        "harvest": {
+          "hand_insta_harvest_possible": true,
+          "min_tier": "wooden",
+          "tool_class": "none"
+        },
+        "item": "gravel",
+        "operation": "gather",
+        "prerequisites": [],
+        "source_blocks": [
+          "gravel"
+        ],
+        "source_entities": [],
+        "source_structures": []
+      },
+      {
+        "harvest": {
+          "hand_insta_harvest_possible": true,
+          "min_tier": "wooden",
+          "tool_class": "none"
+        },
+        "item": "sand",
+        "operation": "gather",
+        "prerequisites": [],
+        "source_blocks": [
+          "sand"
+        ],
+        "source_entities": [],
+        "source_structures": []
+      },
+      {
+        "harvest": {
+          "hand_insta_harvest_possible": true,
+          "min_tier": "wooden",
+          "tool_class": "none"
+        },
+        "item": "oak_log",
+        "operation": "gather",
+        "prerequisites": [],
+        "source_blocks": [
+          "oak_log"
+        ],
+        "source_entities": [],
+        "source_structures": []
+      },
+      {
+        "ingredients": {
+          "oak_log": 1
+        },
+        "item": "oak_planks",
+        "operation": "craft",
+        "prerequisites": [
+          "oak_log"
+        ],
+        "recipe_type": "minecraft:crafting_shapeless",
+        "station": "player"
+      },
+      {
+        "ingredients": {
+          "oak_planks": 4
+        },
+        "item": "crafting_table",
+        "operation": "craft",
+        "prerequisites": [
+          "oak_planks"
+        ],
+        "recipe_type": "minecraft:crafting_shaped",
+        "station": "player"
+      },
+      {
+        "ingredients": {
+          "oak_planks": 2
+        },
+        "item": "stick",
+        "operation": "craft",
+        "prerequisites": [
+          "oak_planks"
+        ],
+        "recipe_type": "minecraft:crafting_shaped",
+        "station": "player"
+      },
+      {
+        "ingredients": {
+          "oak_planks": 2,
+          "stick": 1
+        },
+        "item": "wooden_sword",
+        "operation": "craft",
+        "prerequisites": [
+          "oak_planks",
+          "stick",
+          "crafting_table"
+        ],
+        "recipe_type": "minecraft:crafting_shaped",
+        "station": "crafting_table"
+      },
+      {
+        "harvest": {
+          "hand_insta_harvest_possible": false,
+          "min_tier": "wooden",
+          "tool_class": "sword"
+        },
+        "item": "bone",
+        "operation": "sword",
+        "prerequisites": [
+          "wooden_sword"
+        ],
+        "source_blocks": [],
+        "source_entities": [
+          "skeleton",
+          "skeleton_horse",
+          "stray",
+          "wither_skeleton"
+        ],
+        "source_structures": []
+      },
+      {
+        "ingredients": {
+          "bone": 1
+        },
+        "item": "bone_meal",
+        "operation": "craft",
+        "prerequisites": [
+          "bone"
+        ],
+        "recipe_type": "minecraft:crafting_shapeless",
+        "station": "player"
+      },
+      {
+        "ingredients": {
+          "bone_meal": 1
+        },
+        "item": "white_dye",
+        "operation": "craft",
+        "prerequisites": [
+          "bone_meal"
+        ],
+        "recipe_type": "minecraft:crafting_shapeless",
+        "station": "player"
+      },
+      {
+        "ingredients": {
+          "gravel": 4,
+          "sand": 4,
+          "white_dye": 1
+        },
+        "item": "white_concrete_powder",
+        "operation": "craft",
+        "prerequisites": [
+          "gravel",
+          "sand",
+          "white_dye"
+        ],
+        "recipe_type": "minecraft:crafting_shapeless",
+        "station": "player"
+      }
+    ]
+  },
+  {
+    "target_item": "spruce_stairs",
+    "target_quantity": 124,
+    "blueprint": [
+      {
+        "harvest": {
+          "hand_insta_harvest_possible": true,
+          "min_tier": "wooden",
+          "tool_class": "none"
+        },
+        "item": "oak_log",
+        "operation": "gather",
+        "prerequisites": [],
+        "source_blocks": [
+          "oak_log"
+        ],
+        "source_entities": [],
+        "source_structures": []
+      },
+      {
+        "ingredients": {
+          "oak_log": 1
+        },
+        "item": "oak_planks",
+        "operation": "craft",
+        "prerequisites": [
+          "oak_log"
+        ],
+        "recipe_type": "minecraft:crafting_shapeless",
+        "station": "player"
+      },
+      {
+        "ingredients": {
+          "oak_planks": 4
+        },
+        "item": "crafting_table",
+        "operation": "craft",
+        "prerequisites": [
+          "oak_planks"
+        ],
+        "recipe_type": "minecraft:crafting_shaped",
+        "station": "player"
+      },
+      {
+        "harvest": {
+          "hand_insta_harvest_possible": true,
+          "min_tier": "wooden",
+          "tool_class": "none"
+        },
+        "item": "spruce_log",
+        "operation": "gather",
+        "prerequisites": [],
+        "source_blocks": [
+          "spruce_log"
+        ],
+        "source_entities": [],
+        "source_structures": []
+      },
+      {
+        "ingredients": {
+          "spruce_log": 1
+        },
+        "item": "spruce_planks",
+        "operation": "craft",
+        "prerequisites": [
+          "spruce_log"
+        ],
+        "recipe_type": "minecraft:crafting_shapeless",
+        "station": "player"
+      },
+      {
+        "ingredients": {
+          "spruce_planks": 6
+        },
+        "item": "spruce_stairs",
+        "operation": "craft",
+        "prerequisites": [
+          "spruce_planks",
+          "crafting_table"
+        ],
+        "recipe_type": "minecraft:crafting_shaped",
+        "station": "crafting_table"
+      }
+    ]
+  },
+  {
+    "target_item": "smooth_stone",
+    "target_quantity": 64,
+    "blueprint": [
+      {
+        "harvest": {
+          "hand_insta_harvest_possible": true,
+          "min_tier": "wooden",
+          "tool_class": "none"
+        },
+        "item": "oak_log",
+        "operation": "gather",
+        "prerequisites": [],
+        "source_blocks": [
+          "oak_log"
+        ],
+        "source_entities": [],
+        "source_structures": []
+      },
+      {
+        "ingredients": {
+          "oak_log": 1
+        },
+        "item": "oak_planks",
+        "operation": "craft",
+        "prerequisites": [
+          "oak_log"
+        ],
+        "recipe_type": "minecraft:crafting_shapeless",
+        "station": "player"
+      },
+      {
+        "ingredients": {
+          "oak_planks": 4
+        },
+        "item": "crafting_table",
+        "operation": "craft",
+        "prerequisites": [
+          "oak_planks"
+        ],
+        "recipe_type": "minecraft:crafting_shaped",
+        "station": "player"
+      },
+      {
+        "ingredients": {
+          "oak_planks": 2
+        },
+        "item": "stick",
+        "operation": "craft",
+        "prerequisites": [
+          "oak_planks"
+        ],
+        "recipe_type": "minecraft:crafting_shaped",
+        "station": "player"
+      },
+      {
+        "ingredients": {
+          "oak_planks": 3,
+          "stick": 2
+        },
+        "item": "wooden_pickaxe",
+        "operation": "craft",
+        "prerequisites": [
+          "oak_planks",
+          "stick",
+          "crafting_table"
+        ],
+        "recipe_type": "minecraft:crafting_shaped",
+        "station": "crafting_table"
+      },
+      {
+        "harvest": {
+          "hand_insta_harvest_possible": false,
+          "min_tier": "wooden",
+          "tool_class": "pickaxe"
+        },
+        "item": "cobblestone",
+        "operation": "mine",
+        "prerequisites": [
+          "wooden_pickaxe"
+        ],
+        "source_blocks": [
+          "cobblestone",
+          "infested_cobblestone",
+          "stone"
+        ],
+        "source_entities": [],
+        "source_structures": []
+      },
+      {
+        "ingredients": {
+          "cobblestone": 8
+        },
+        "item": "furnace",
+        "operation": "craft",
+        "prerequisites": [
+          "cobblestone",
+          "crafting_table"
+        ],
+        "recipe_type": "minecraft:crafting_shaped",
+        "station": "crafting_table"
+      },
+      {
+        "ingredients": {
+          "cobblestone": 1
+        },
+        "item": "stone",
+        "operation": "smelt",
+        "prerequisites": [
+          "cobblestone",
+          "furnace"
+        ],
+        "recipe_type": "minecraft:smelting",
+        "station": "furnace"
+      },
+      {
+        "ingredients": {
+          "stone": 1
+        },
+        "item": "smooth_stone",
+        "operation": "smelt",
+        "prerequisites": [
+          "stone",
+          "furnace"
+        ],
+        "recipe_type": "minecraft:smelting",
+        "station": "furnace"
+      }
+    ]
+  },
+  {
+    "target_item": "terracotta",
+    "target_quantity": 82,
+    "blueprint": [
+      {
+        "harvest": {
+          "hand_insta_harvest_possible": true,
+          "min_tier": "wooden",
+          "tool_class": "none"
+        },
+        "item": "oak_log",
+        "operation": "gather",
+        "prerequisites": [],
+        "source_blocks": [
+          "oak_log"
+        ],
+        "source_entities": [],
+        "source_structures": []
+      },
+      {
+        "ingredients": {
+          "oak_log": 1
+        },
+        "item": "oak_planks",
+        "operation": "craft",
+        "prerequisites": [
+          "oak_log"
+        ],
+        "recipe_type": "minecraft:crafting_shapeless",
+        "station": "player"
+      },
+      {
+        "ingredients": {
+          "oak_planks": 4
+        },
+        "item": "crafting_table",
+        "operation": "craft",
+        "prerequisites": [
+          "oak_planks"
+        ],
+        "recipe_type": "minecraft:crafting_shaped",
+        "station": "player"
+      },
+      {
+        "ingredients": {
+          "oak_planks": 2
+        },
+        "item": "stick",
+        "operation": "craft",
+        "prerequisites": [
+          "oak_planks"
+        ],
+        "recipe_type": "minecraft:crafting_shaped",
+        "station": "player"
+      },
+      {
+        "ingredients": {
+          "oak_planks": 3,
+          "stick": 2
+        },
+        "item": "wooden_pickaxe",
+        "operation": "craft",
+        "prerequisites": [
+          "oak_planks",
+          "stick",
+          "crafting_table"
+        ],
+        "recipe_type": "minecraft:crafting_shaped",
+        "station": "crafting_table"
+      },
+      {
+        "harvest": {
+          "hand_insta_harvest_possible": false,
+          "min_tier": "wooden",
+          "tool_class": "pickaxe"
+        },
+        "item": "cobblestone",
+        "operation": "mine",
+        "prerequisites": [
+          "wooden_pickaxe"
+        ],
+        "source_blocks": [
+          "cobblestone",
+          "infested_cobblestone",
+          "stone"
+        ],
+        "source_entities": [],
+        "source_structures": []
+      },
+      {
+        "ingredients": {
+          "cobblestone": 8
+        },
+        "item": "furnace",
+        "operation": "craft",
+        "prerequisites": [
+          "cobblestone",
+          "crafting_table"
+        ],
+        "recipe_type": "minecraft:crafting_shaped",
+        "station": "crafting_table"
+      },
+      {
+        "harvest": {
+          "hand_insta_harvest_possible": true,
+          "min_tier": "wooden",
+          "tool_class": "none"
+        },
+        "item": "clay_ball",
+        "operation": "gather",
+        "prerequisites": [],
+        "source_blocks": [
+          "clay"
+        ],
+        "source_entities": [],
+        "source_structures": []
+      },
+      {
+        "ingredients": {
+          "clay_ball": 4
+        },
+        "item": "clay",
+        "operation": "craft",
+        "prerequisites": [
+          "clay_ball"
+        ],
+        "recipe_type": "minecraft:crafting_shaped",
+        "station": "player"
+      },
+      {
+        "ingredients": {
+          "clay": 1
+        },
+        "item": "terracotta",
+        "operation": "smelt",
+        "prerequisites": [
+          "clay",
+          "furnace"
+        ],
+        "recipe_type": "minecraft:smelting",
+        "station": "furnace"
+      }
+    ]
+  },
+  {
+    "target_item": "bricks",
+    "target_quantity": 48,
+    "blueprint": [
+      {
+        "harvest": {
+          "hand_insta_harvest_possible": true,
+          "min_tier": "wooden",
+          "tool_class": "none"
+        },
+        "item": "oak_log",
+        "operation": "gather",
+        "prerequisites": [],
+        "source_blocks": [
+          "oak_log"
+        ],
+        "source_entities": [],
+        "source_structures": []
+      },
+      {
+        "ingredients": {
+          "oak_log": 1
+        },
+        "item": "oak_planks",
+        "operation": "craft",
+        "prerequisites": [
+          "oak_log"
+        ],
+        "recipe_type": "minecraft:crafting_shapeless",
+        "station": "player"
+      },
+      {
+        "ingredients": {
+          "oak_planks": 4
+        },
+        "item": "crafting_table",
+        "operation": "craft",
+        "prerequisites": [
+          "oak_planks"
+        ],
+        "recipe_type": "minecraft:crafting_shaped",
+        "station": "player"
+      },
+      {
+        "ingredients": {
+          "oak_planks": 2
+        },
+        "item": "stick",
+        "operation": "craft",
+        "prerequisites": [
+          "oak_planks"
+        ],
+        "recipe_type": "minecraft:crafting_shaped",
+        "station": "player"
+      },
+      {
+        "ingredients": {
+          "oak_planks": 3,
+          "stick": 2
+        },
+        "item": "wooden_pickaxe",
+        "operation": "craft",
+        "prerequisites": [
+          "oak_planks",
+          "stick",
+          "crafting_table"
+        ],
+        "recipe_type": "minecraft:crafting_shaped",
+        "station": "crafting_table"
+      },
+      {
+        "harvest": {
+          "hand_insta_harvest_possible": false,
+          "min_tier": "wooden",
+          "tool_class": "pickaxe"
+        },
+        "item": "cobblestone",
+        "operation": "mine",
+        "prerequisites": [
+          "wooden_pickaxe"
+        ],
+        "source_blocks": [
+          "cobblestone",
+          "infested_cobblestone",
+          "stone"
+        ],
+        "source_entities": [],
+        "source_structures": []
+      },
+      {
+        "ingredients": {
+          "cobblestone": 8
+        },
+        "item": "furnace",
+        "operation": "craft",
+        "prerequisites": [
+          "cobblestone",
+          "crafting_table"
+        ],
+        "recipe_type": "minecraft:crafting_shaped",
+        "station": "crafting_table"
+      },
+      {
+        "harvest": {
+          "hand_insta_harvest_possible": true,
+          "min_tier": "wooden",
+          "tool_class": "none"
+        },
+        "item": "clay_ball",
+        "operation": "gather",
+        "prerequisites": [],
+        "source_blocks": [
+          "clay"
+        ],
+        "source_entities": [],
+        "source_structures": []
+      },
+      {
+        "ingredients": {
+          "clay_ball": 1
+        },
+        "item": "brick",
+        "operation": "smelt",
+        "prerequisites": [
+          "clay_ball",
+          "furnace"
+        ],
+        "recipe_type": "minecraft:smelting",
+        "station": "furnace"
+      },
+      {
+        "ingredients": {
+          "brick": 4
+        },
+        "item": "bricks",
+        "operation": "craft",
+        "prerequisites": [
+          "brick"
+        ],
+        "recipe_type": "minecraft:crafting_shaped",
+        "station": "player"
+      }
+    ]
+  },
+  {
+    "target_item": "deepslate",
+    "target_quantity": 400,
+    "blueprint": [
+      {
+        "harvest": {
+          "hand_insta_harvest_possible": true,
+          "min_tier": "wooden",
+          "tool_class": "none"
+        },
+        "item": "oak_log",
+        "operation": "gather",
+        "prerequisites": [],
+        "source_blocks": [
+          "oak_log"
+        ],
+        "source_entities": [],
+        "source_structures": []
+      },
+      {
+        "ingredients": {
+          "oak_log": 1
+        },
+        "item": "oak_planks",
+        "operation": "craft",
+        "prerequisites": [
+          "oak_log"
+        ],
+        "recipe_type": "minecraft:crafting_shapeless",
+        "station": "player"
+      },
+      {
+        "ingredients": {
+          "oak_planks": 4
+        },
+        "item": "crafting_table",
+        "operation": "craft",
+        "prerequisites": [
+          "oak_planks"
+        ],
+        "recipe_type": "minecraft:crafting_shaped",
+        "station": "player"
+      },
+      {
+        "ingredients": {
+          "oak_planks": 2
+        },
+        "item": "stick",
+        "operation": "craft",
+        "prerequisites": [
+          "oak_planks"
+        ],
+        "recipe_type": "minecraft:crafting_shaped",
+        "station": "player"
+      },
+      {
+        "ingredients": {
+          "oak_planks": 3,
+          "stick": 2
+        },
+        "item": "wooden_pickaxe",
+        "operation": "craft",
+        "prerequisites": [
+          "oak_planks",
+          "stick",
+          "crafting_table"
+        ],
+        "recipe_type": "minecraft:crafting_shaped",
+        "station": "crafting_table"
+      },
+      {
+        "harvest": {
+          "hand_insta_harvest_possible": false,
+          "min_tier": "wooden",
+          "tool_class": "pickaxe"
+        },
+        "item": "cobblestone",
+        "operation": "mine",
+        "prerequisites": [
+          "wooden_pickaxe"
+        ],
+        "source_blocks": [
+          "cobblestone",
+          "infested_cobblestone",
+          "stone"
+        ],
+        "source_entities": [],
+        "source_structures": []
+      },
+      {
+        "ingredients": {
+          "cobblestone": 8
+        },
+        "item": "furnace",
+        "operation": "craft",
+        "prerequisites": [
+          "cobblestone",
+          "crafting_table"
+        ],
+        "recipe_type": "minecraft:crafting_shaped",
+        "station": "crafting_table"
+      },
+      {
+        "harvest": {
+          "hand_insta_harvest_possible": true,
+          "min_tier": "wooden",
+          "tool_class": "none"
+        },
+        "item": "cobbled_deepslate",
+        "operation": "gather",
+        "prerequisites": [],
+        "source_blocks": [
+          "cobbled_deepslate",
+          "deepslate"
+        ],
+        "source_entities": [],
+        "source_structures": []
+      },
+      {
+        "ingredients": {
+          "cobbled_deepslate": 1
+        },
+        "item": "deepslate",
+        "operation": "smelt",
+        "prerequisites": [
+          "cobbled_deepslate",
+          "furnace"
+        ],
+        "recipe_type": "minecraft:smelting",
+        "station": "furnace"
+      }
+    ]
+  },
+  {
+    "target_item": "oak_slab",
+    "target_quantity": 96,
+    "blueprint": [
+      {
+        "harvest": {
+          "hand_insta_harvest_possible": true,
+          "min_tier": "wooden",
+          "tool_class": "none"
+        },
+        "item": "oak_log",
+        "operation": "gather",
+        "prerequisites": [],
+        "source_blocks": [
+          "oak_log"
+        ],
+        "source_entities": [],
+        "source_structures": []
+      },
+      {
+        "ingredients": {
+          "oak_log": 1
+        },
+        "item": "oak_planks",
+        "operation": "craft",
+        "prerequisites": [
+          "oak_log"
+        ],
+        "recipe_type": "minecraft:crafting_shapeless",
+        "station": "player"
+      },
+      {
+        "ingredients": {
+          "oak_planks": 4
+        },
+        "item": "crafting_table",
+        "operation": "craft",
+        "prerequisites": [
+          "oak_planks"
+        ],
+        "recipe_type": "minecraft:crafting_shaped",
+        "station": "player"
+      },
+      {
+        "ingredients": {
+          "oak_planks": 3
+        },
+        "item": "oak_slab",
+        "operation": "craft",
+        "prerequisites": [
+          "oak_planks",
+          "crafting_table"
+        ],
+        "recipe_type": "minecraft:crafting_shaped",
+        "station": "crafting_table"
+      }
+    ]
+  },
+  {
+    "target_item": "stripped_spruce_log",
+    "target_quantity": 32,
+    "blueprint": [
+      {
+        "harvest": {
+          "hand_insta_harvest_possible": true,
+          "min_tier": "wooden",
+          "tool_class": "none"
+        },
+        "item": "stripped_spruce_log",
+        "operation": "gather",
+        "prerequisites": [],
+        "source_blocks": [
+          "stripped_spruce_log"
+        ],
+        "source_entities": [],
+        "source_structures": []
+      }
+    ]
+  },
+  {
+    "target_item": "sand",
+    "target_quantity": 200,
+    "blueprint": [
+      {
+        "harvest": {
+          "hand_insta_harvest_possible": true,
+          "min_tier": "wooden",
+          "tool_class": "none"
+        },
+        "item": "sand",
+        "operation": "gather",
+        "prerequisites": [],
+        "source_blocks": [
+          "sand"
+        ],
+        "source_entities": [],
+        "source_structures": []
+      }
+    ]
+  },
+  {
+    "target_item": "gravel",
+    "target_quantity": 150,
+    "blueprint": [
+      {
+        "harvest": {
+          "hand_insta_harvest_possible": true,
+          "min_tier": "wooden",
+          "tool_class": "none"
+        },
+        "item": "gravel",
+        "operation": "gather",
+        "prerequisites": [],
+        "source_blocks": [
+          "gravel"
+        ],
+        "source_entities": [],
+        "source_structures": []
+      }
+    ]
+  },
+  {
+    "target_item": "dirt",
+    "target_quantity": 128,
+    "blueprint": [
+      {
+        "harvest": {
+          "hand_insta_harvest_possible": true,
+          "min_tier": "wooden",
+          "tool_class": "none"
+        },
+        "item": "dirt",
+        "operation": "gather",
+        "prerequisites": [],
+        "source_blocks": [
+          "dirt",
+          "dirt_path",
+          "farmland",
+          "grass_block",
+          "mycelium",
+          "podzol"
+        ],
+        "source_entities": [],
+        "source_structures": []
+      }
+    ]
+  },
+  {
+    "target_item": "iron_ingot",
+    "target_quantity": 42,
+    "blueprint": [
+      {
+        "harvest": {
+          "hand_insta_harvest_possible": true,
+          "min_tier": "wooden",
+          "tool_class": "none"
+        },
+        "item": "oak_log",
+        "operation": "gather",
+        "prerequisites": [],
+        "source_blocks": [
+          "oak_log"
+        ],
+        "source_entities": [],
+        "source_structures": []
+      },
+      {
+        "ingredients": {
+          "oak_log": 1
+        },
+        "item": "oak_planks",
+        "operation": "craft",
+        "prerequisites": [
+          "oak_log"
+        ],
+        "recipe_type": "minecraft:crafting_shapeless",
+        "station": "player"
+      },
+      {
+        "ingredients": {
+          "oak_planks": 4
+        },
+        "item": "crafting_table",
+        "operation": "craft",
+        "prerequisites": [
+          "oak_planks"
+        ],
+        "recipe_type": "minecraft:crafting_shaped",
+        "station": "player"
+      },
+      {
+        "ingredients": {
+          "oak_planks": 2
+        },
+        "item": "stick",
+        "operation": "craft",
+        "prerequisites": [
+          "oak_planks"
+        ],
+        "recipe_type": "minecraft:crafting_shaped",
+        "station": "player"
+      },
+      {
+        "ingredients": {
+          "oak_planks": 3,
+          "stick": 2
+        },
+        "item": "wooden_pickaxe",
+        "operation": "craft",
+        "prerequisites": [
+          "oak_planks",
+          "stick",
+          "crafting_table"
+        ],
+        "recipe_type": "minecraft:crafting_shaped",
+        "station": "crafting_table"
+      },
+      {
+        "harvest": {
+          "hand_insta_harvest_possible": false,
+          "min_tier": "wooden",
+          "tool_class": "pickaxe"
+        },
+        "item": "cobblestone",
+        "operation": "mine",
+        "prerequisites": [
+          "wooden_pickaxe"
+        ],
+        "source_blocks": [
+          "cobblestone",
+          "infested_cobblestone",
+          "stone"
+        ],
+        "source_entities": [],
+        "source_structures": []
+      },
+      {
+        "ingredients": {
+          "cobblestone": 8
+        },
+        "item": "furnace",
+        "operation": "craft",
+        "prerequisites": [
+          "cobblestone",
+          "crafting_table"
+        ],
+        "recipe_type": "minecraft:crafting_shaped",
+        "station": "crafting_table"
+      },
+      {
+        "ingredients": {
+          "cobblestone": 3,
+          "stick": 2
+        },
+        "item": "stone_pickaxe",
+        "operation": "craft",
+        "prerequisites": [
+          "cobblestone",
+          "stick",
+          "crafting_table"
+        ],
+        "recipe_type": "minecraft:crafting_shaped",
+        "station": "crafting_table"
+      },
+      {
+        "harvest": {
+          "hand_insta_harvest_possible": false,
+          "min_tier": "stone",
+          "tool_class": "pickaxe"
+        },
+        "item": "deepslate_iron_ore",
+        "junk/by-product": {
+          "item": "cobbled_deepslate",
+          "quantity": 180
+        },
+        "operation": "mine",
+        "prerequisites": [
+          "stone_pickaxe"
+        ],
+        "source_blocks": [
+          "deepslate_iron_ore"
+        ],
+        "source_entities": [],
+        "source_structures": []
+      },
+      {
+        "ingredients": {
+          "deepslate_iron_ore": 1
+        },
+        "item": "iron_ingot",
+        "operation": "smelt",
+        "prerequisites": [
+          "deepslate_iron_ore",
+          "furnace"
+        ],
+        "recipe_type": "minecraft:smelting",
+        "station": "furnace"
+      }
+    ]
+  },
+  {
+    "target_item": "copper_block",
+    "target_quantity": 24,
+    "blueprint": [
+      {
+        "harvest": {
+          "hand_insta_harvest_possible": true,
+          "min_tier": "wooden",
+          "tool_class": "none"
+        },
+        "item": "oak_log",
+        "operation": "gather",
+        "prerequisites": [],
+        "source_blocks": [
+          "oak_log"
+        ],
+        "source_entities": [],
+        "source_structures": []
+      },
+      {
+        "ingredients": {
+          "oak_log": 1
+        },
+        "item": "oak_planks",
+        "operation": "craft",
+        "prerequisites": [
+          "oak_log"
+        ],
+        "recipe_type": "minecraft:crafting_shapeless",
+        "station": "player"
+      },
+      {
+        "ingredients": {
+          "oak_planks": 4
+        },
+        "item": "crafting_table",
+        "operation": "craft",
+        "prerequisites": [
+          "oak_planks"
+        ],
+        "recipe_type": "minecraft:crafting_shaped",
+        "station": "player"
+      },
+      {
+        "ingredients": {
+          "oak_planks": 2
+        },
+        "item": "stick",
+        "operation": "craft",
+        "prerequisites": [
+          "oak_planks"
+        ],
+        "recipe_type": "minecraft:crafting_shaped",
+        "station": "player"
+      },
+      {
+        "ingredients": {
+          "oak_planks": 3,
+          "stick": 2
+        },
+        "item": "wooden_pickaxe",
+        "operation": "craft",
+        "prerequisites": [
+          "oak_planks",
+          "stick",
+          "crafting_table"
+        ],
+        "recipe_type": "minecraft:crafting_shaped",
+        "station": "crafting_table"
+      },
+      {
+        "harvest": {
+          "hand_insta_harvest_possible": false,
+          "min_tier": "wooden",
+          "tool_class": "pickaxe"
+        },
+        "item": "cobblestone",
+        "operation": "mine",
+        "prerequisites": [
+          "wooden_pickaxe"
+        ],
+        "source_blocks": [
+          "cobblestone",
+          "infested_cobblestone",
+          "stone"
+        ],
+        "source_entities": [],
+        "source_structures": []
+      },
+      {
+        "ingredients": {
+          "cobblestone": 8
+        },
+        "item": "furnace",
+        "operation": "craft",
+        "prerequisites": [
+          "cobblestone",
+          "crafting_table"
+        ],
+        "recipe_type": "minecraft:crafting_shaped",
+        "station": "crafting_table"
+      },
+      {
+        "ingredients": {
+          "cobblestone": 3,
+          "stick": 2
+        },
+        "item": "stone_pickaxe",
+        "operation": "craft",
+        "prerequisites": [
+          "cobblestone",
+          "stick",
+          "crafting_table"
+        ],
+        "recipe_type": "minecraft:crafting_shaped",
+        "station": "crafting_table"
+      },
+      {
+        "harvest": {
+          "hand_insta_harvest_possible": false,
+          "min_tier": "stone",
+          "tool_class": "pickaxe"
+        },
+        "item": "copper_ore",
+        "junk/by-product": {
+          "item": "stone",
+          "quantity": 230
+        },
+        "operation": "mine",
+        "prerequisites": [
+          "stone_pickaxe"
+        ],
+        "source_blocks": [
+          "copper_ore"
+        ],
+        "source_entities": [],
+        "source_structures": []
+      },
+      {
+        "ingredients": {
+          "copper_ore": 1
+        },
+        "item": "copper_ingot",
+        "operation": "smelt",
+        "prerequisites": [
+          "copper_ore",
+          "furnace"
+        ],
+        "recipe_type": "minecraft:smelting",
+        "station": "furnace"
+      },
+      {
+        "ingredients": {
+          "copper_ingot": 9
+        },
+        "item": "copper_block",
+        "operation": "craft",
+        "prerequisites": [
+          "copper_ingot",
+          "crafting_table"
+        ],
+        "recipe_type": "minecraft:crafting_shaped",
+        "station": "crafting_table"
+      }
+    ]
+  },
+  {
+    "target_item": "white_wool",
+    "target_quantity": 16,
+    "blueprint": [
+      {
+        "harvest": {
+          "hand_insta_harvest_possible": true,
+          "min_tier": "wooden",
+          "tool_class": "none"
+        },
+        "item": "string",
+        "operation": "gather",
+        "prerequisites": [],
+        "source_blocks": [
+          "cobweb",
+          "tripwire"
+        ],
+        "source_entities": [
+          "cat",
+          "cave_spider",
+          "spider",
+          "strider"
+        ],
+        "source_structures": []
+      },
+      {
+        "ingredients": {
+          "string": 4
+        },
+        "item": "white_wool",
+        "operation": "craft",
+        "prerequisites": [
+          "string"
+        ],
+        "recipe_type": "minecraft:crafting_shaped",
+        "station": "player"
+      }
+    ]
+  },
+  {
+    "target_item": "clay_ball",
+    "target_quantity": 60,
+    "blueprint": [
+      {
+        "harvest": {
+          "hand_insta_harvest_possible": true,
+          "min_tier": "wooden",
+          "tool_class": "none"
+        },
+        "item": "clay_ball",
+        "operation": "gather",
+        "prerequisites": [],
+        "source_blocks": [
+          "clay"
+        ],
+        "source_entities": [],
+        "source_structures": []
+      }
+    ]
+  },
+  {
+    "target_item": "andesite",
+    "target_quantity": 88,
+    "blueprint": [
+      {
+        "harvest": {
+          "hand_insta_harvest_possible": true,
+          "min_tier": "wooden",
+          "tool_class": "none"
+        },
+        "item": "oak_log",
+        "operation": "gather",
+        "prerequisites": [],
+        "source_blocks": [
+          "oak_log"
+        ],
+        "source_entities": [],
+        "source_structures": []
+      },
+      {
+        "ingredients": {
+          "oak_log": 1
+        },
+        "item": "oak_planks",
+        "operation": "craft",
+        "prerequisites": [
+          "oak_log"
+        ],
+        "recipe_type": "minecraft:crafting_shapeless",
+        "station": "player"
+      },
+      {
+        "ingredients": {
+          "oak_planks": 4
+        },
+        "item": "crafting_table",
+        "operation": "craft",
+        "prerequisites": [
+          "oak_planks"
+        ],
+        "recipe_type": "minecraft:crafting_shaped",
+        "station": "player"
+      },
+      {
+        "ingredients": {
+          "oak_planks": 2
+        },
+        "item": "stick",
+        "operation": "craft",
+        "prerequisites": [
+          "oak_planks"
+        ],
+        "recipe_type": "minecraft:crafting_shaped",
+        "station": "player"
+      },
+      {
+        "ingredients": {
+          "oak_planks": 3,
+          "stick": 2
+        },
+        "item": "wooden_pickaxe",
+        "operation": "craft",
+        "prerequisites": [
+          "oak_planks",
+          "stick",
+          "crafting_table"
+        ],
+        "recipe_type": "minecraft:crafting_shaped",
+        "station": "crafting_table"
+      },
+      {
+        "harvest": {
+          "hand_insta_harvest_possible": false,
+          "min_tier": "wooden",
+          "tool_class": "pickaxe"
+        },
+        "item": "cobblestone",
+        "operation": "mine",
+        "prerequisites": [
+          "wooden_pickaxe"
+        ],
+        "source_blocks": [
+          "cobblestone",
+          "infested_cobblestone",
+          "stone"
+        ],
+        "source_entities": [],
+        "source_structures": []
+      },
+      {
+        "harvest": {
+          "hand_insta_harvest_possible": false,
+          "min_tier": "wooden",
+          "tool_class": "pickaxe"
+        },
+        "item": "diorite",
+        "operation": "mine",
+        "prerequisites": [
+          "wooden_pickaxe"
+        ],
+        "source_blocks": [
+          "diorite"
+        ],
+        "source_entities": [],
+        "source_structures": []
+      },
+      {
+        "ingredients": {
+          "cobblestone": 1,
+          "diorite": 1
+        },
+        "item": "andesite",
+        "operation": "craft",
+        "prerequisites": [
+          "cobblestone",
+          "diorite"
+        ],
+        "recipe_type": "minecraft:crafting_shapeless",
+        "station": "player"
+      }
+    ]
+  }
+]

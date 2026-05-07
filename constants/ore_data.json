@@ -1,0 +1,20 @@
+{
+    "copper": {
+        "vein_size": 2,
+        "avg_yield": 3.5,
+        "blocks_to_break": 230,
+        "junk_block": "cobblestone"
+    },
+    "redstone": {
+        "vein_size": 4,
+        "avg_yield": 4.5,
+        "blocks_to_break": 191,
+        "junk_block": "cobblestone"
+    },
+    "lapis": {
+        "vein_size": 6,
+        "avg_yield": 6.5,
+        "blocks_to_break": 1151,
+        "junk_block": "cobblestone"
+    }
+}

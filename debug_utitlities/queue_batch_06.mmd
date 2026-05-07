@@ -1,0 +1,44 @@
+%%{init: {'flowchart': {'nodeSpacing': 10, 'rankSpacing': 40, 'padding': 16}, 'themeVariables': {'fontSize': '28px'}} }%%
+flowchart TD
+    %% Phase 5 Execution Queue — tasks 101–120
+
+    n1["101. MINE clay_ball x64"]
+    n2["102. CRAFT clay x64"]
+    n3["103. MINE clay_ball x64"]
+    n4["104. MINE clay_ball x64"]
+    n5["105. CRAFT clay x18"]
+    n6["106. SMELT terracotta x18  fuel:12pk"]
+    n7["107. MINE clay_ball x64"]
+    n8["108. MINE clay_ball x64"]
+    n9["109. SMELT brick x64  fuel:43pk"]
+    n10["110. MINE clay_ball x4"]
+    n11["111. MINE dirt x64"]
+    n12["112. MINE dirt x64"]
+    n13["113. MINE gravel x64"]
+    n14["114. MINE gravel x46"]
+    n15["115. MINE oak_log x64"]
+    n16["116. CRAFT oak_planks x64"]
+    n17["117. SMELT deepslate x64  fuel:43pk"]
+    n18["118. CRAFT oak_planks x64"]
+    n19["119. SMELT iron_ingot x42  fuel:28pk"]
+    n20["120. CRAFT oak_planks x64"]
+
+    n1 --> n2
+    n2 --> n3
+    n3 --> n4
+    n4 --> n5
+    n5 --> n6
+    n6 --> n7
+    n7 --> n8
+    n8 --> n9
+    n9 --> n10
+    n10 --> n11
+    n11 --> n12
+    n12 --> n13
+    n13 --> n14
+    n14 --> n15
+    n15 --> n16
+    n16 --> n17
+    n17 --> n18
+    n18 --> n19
+    n19 --> n20

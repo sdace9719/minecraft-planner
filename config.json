@@ -1,0 +1,7 @@
+{
+  "minecraft_host": "127.0.0.1",
+  "minecraft_port": 25565,
+  "minecraft_version": "1.21.1",
+  "bot_username": "AIBot",
+  "api_port": 3000
+}

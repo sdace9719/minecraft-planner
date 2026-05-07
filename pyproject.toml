@@ -1,0 +1,16 @@
+[project]
+name = "minecraft-planning"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "nbtschematic>=0.2.1",
+    "numpy>=1.26.4",
+    "requests>=2.33.1",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.3",
+]

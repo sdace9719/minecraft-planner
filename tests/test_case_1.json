@@ -1,0 +1,7 @@
+[
+  {"name": "iron_sword", "quantity": 1},
+  {"name": "shield", "quantity": 1},
+  {"name": "chest", "quantity": 2},
+  {"name": "bread", "quantity": 5},
+  {"name": "torch", "quantity": 16}
+]

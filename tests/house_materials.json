@@ -1,0 +1,74 @@
+[
+  {
+    "name": "grass_block",
+    "quantity": 126
+  },
+  {
+    "name": "dirt",
+    "quantity": 24
+  },
+  {
+    "name": "oak_planks",
+    "quantity": 154
+  },
+  {
+    "name": "stripped_spruce_log",
+    "quantity": 113
+  },
+  {
+    "name": "andesite",
+    "quantity": 21
+  },
+  {
+    "name": "cobblestone",
+    "quantity": 34
+  },
+  {
+    "name": "stone",
+    "quantity": 26
+  },
+  {
+    "name": "spruce_door",
+    "quantity": 2
+  },
+  {
+    "name": "white_stained_glass_pane",
+    "quantity": 20
+  },
+  {
+    "name": "spruce_stairs",
+    "quantity": 133
+  },
+  {
+    "name": "spruce_planks",
+    "quantity": 287
+  },
+  {
+    "name": "oak_stairs",
+    "quantity": 106
+  },
+  {
+    "name": "lantern",
+    "quantity": 1
+  },
+  {
+    "name": "cracked_stone_bricks",
+    "quantity": 2
+  },
+  {
+    "name": "stone_bricks",
+    "quantity": 3
+  },
+  {
+    "name": "spruce_slab",
+    "quantity": 15
+  },
+  {
+    "name": "spruce_trapdoor",
+    "quantity": 6
+  },
+  {
+    "name": "campfire",
+    "quantity": 2
+  }
+]

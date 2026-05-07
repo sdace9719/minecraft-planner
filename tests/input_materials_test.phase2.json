@@ -1,0 +1,1034 @@
+[
+  {
+    "id": "CRAFT:oak_planks",
+    "name": "oak_planks",
+    "quantity": 512,
+    "dependencies": [
+      "MINE:oak_log"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "MINE:oak_log",
+    "name": "oak_log",
+    "quantity": 128,
+    "dependencies": [],
+    "operation_type": "mine"
+  },
+  {
+    "id": "SMELT:stone",
+    "name": "stone",
+    "quantity": 256,
+    "dependencies": [
+      "MINE:cobblestone",
+      "CRAFT:furnace",
+      "CRAFT:oak_planks"
+    ],
+    "operation_type": "smelt"
+  },
+  {
+    "id": "MINE:cobblestone",
+    "name": "cobblestone",
+    "quantity": 264,
+    "dependencies": [
+      "CRAFT:wooden_pickaxe"
+    ],
+    "operation_type": "mine"
+  },
+  {
+    "id": "CRAFT:wooden_pickaxe",
+    "name": "wooden_pickaxe",
+    "quantity": 6,
+    "dependencies": [
+      "CRAFT:oak_planks",
+      "CRAFT:stick",
+      "CRAFT:crafting_table"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "CRAFT:oak_planks",
+    "name": "oak_planks",
+    "quantity": 209,
+    "dependencies": [
+      "MINE:oak_log"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "MINE:oak_log",
+    "name": "oak_log",
+    "quantity": 54,
+    "dependencies": [],
+    "operation_type": "mine"
+  },
+  {
+    "id": "CRAFT:stick",
+    "name": "stick",
+    "quantity": 12,
+    "dependencies": [
+      "CRAFT:oak_planks"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "CRAFT:crafting_table",
+    "name": "crafting_table",
+    "quantity": 3,
+    "dependencies": [
+      "CRAFT:oak_planks"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "CRAFT:furnace",
+    "name": "furnace",
+    "quantity": 1,
+    "dependencies": [
+      "MINE:cobblestone",
+      "CRAFT:crafting_table"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "SMELT:glass",
+    "name": "glass",
+    "quantity": 160,
+    "dependencies": [
+      "MINE:sand",
+      "CRAFT:furnace",
+      "CRAFT:oak_planks"
+    ],
+    "operation_type": "smelt"
+  },
+  {
+    "id": "MINE:sand",
+    "name": "sand",
+    "quantity": 160,
+    "dependencies": [],
+    "operation_type": "mine"
+  },
+  {
+    "id": "CRAFT:furnace",
+    "name": "furnace",
+    "quantity": 1,
+    "dependencies": [
+      "MINE:cobblestone",
+      "CRAFT:crafting_table"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "MINE:cobblestone",
+    "name": "cobblestone",
+    "quantity": 8,
+    "dependencies": [
+      "CRAFT:wooden_pickaxe"
+    ],
+    "operation_type": "mine"
+  },
+  {
+    "id": "CRAFT:wooden_pickaxe",
+    "name": "wooden_pickaxe",
+    "quantity": 1,
+    "dependencies": [
+      "CRAFT:oak_planks",
+      "CRAFT:stick",
+      "CRAFT:crafting_table"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "CRAFT:oak_planks",
+    "name": "oak_planks",
+    "quantity": 120,
+    "dependencies": [
+      "MINE:oak_log"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "MINE:oak_log",
+    "name": "oak_log",
+    "quantity": 31,
+    "dependencies": [],
+    "operation_type": "mine"
+  },
+  {
+    "id": "CRAFT:stick",
+    "name": "stick",
+    "quantity": 2,
+    "dependencies": [
+      "CRAFT:oak_planks"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "CRAFT:crafting_table",
+    "name": "crafting_table",
+    "quantity": 2,
+    "dependencies": [
+      "CRAFT:oak_planks"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "CRAFT:white_concrete_powder",
+    "name": "white_concrete_powder",
+    "quantity": 300,
+    "dependencies": [
+      "MINE:gravel",
+      "MINE:sand",
+      "CRAFT:white_dye"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "MINE:gravel",
+    "name": "gravel",
+    "quantity": 152,
+    "dependencies": [],
+    "operation_type": "mine"
+  },
+  {
+    "id": "MINE:sand",
+    "name": "sand",
+    "quantity": 152,
+    "dependencies": [],
+    "operation_type": "mine"
+  },
+  {
+    "id": "CRAFT:white_dye",
+    "name": "white_dye",
+    "quantity": 38,
+    "dependencies": [
+      "CRAFT:bone_meal"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "CRAFT:bone_meal",
+    "name": "bone_meal",
+    "quantity": 38,
+    "dependencies": [
+      "SWORD:bone"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "SWORD:bone",
+    "name": "bone",
+    "quantity": 13,
+    "dependencies": [
+      "CRAFT:wooden_sword"
+    ],
+    "operation_type": "sword"
+  },
+  {
+    "id": "CRAFT:wooden_sword",
+    "name": "wooden_sword",
+    "quantity": 1,
+    "dependencies": [
+      "CRAFT:oak_planks",
+      "CRAFT:stick",
+      "CRAFT:crafting_table"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "CRAFT:oak_planks",
+    "name": "oak_planks",
+    "quantity": 8,
+    "dependencies": [
+      "MINE:oak_log"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "MINE:oak_log",
+    "name": "oak_log",
+    "quantity": 3,
+    "dependencies": [],
+    "operation_type": "mine"
+  },
+  {
+    "id": "CRAFT:stick",
+    "name": "stick",
+    "quantity": 1,
+    "dependencies": [
+      "CRAFT:oak_planks"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "CRAFT:crafting_table",
+    "name": "crafting_table",
+    "quantity": 1,
+    "dependencies": [
+      "CRAFT:oak_planks"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "CRAFT:spruce_stairs",
+    "name": "spruce_stairs",
+    "quantity": 124,
+    "dependencies": [
+      "CRAFT:spruce_planks",
+      "CRAFT:crafting_table"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "CRAFT:spruce_planks",
+    "name": "spruce_planks",
+    "quantity": 186,
+    "dependencies": [
+      "MINE:spruce_log"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "MINE:spruce_log",
+    "name": "spruce_log",
+    "quantity": 47,
+    "dependencies": [],
+    "operation_type": "mine"
+  },
+  {
+    "id": "CRAFT:crafting_table",
+    "name": "crafting_table",
+    "quantity": 1,
+    "dependencies": [
+      "CRAFT:oak_planks"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "CRAFT:oak_planks",
+    "name": "oak_planks",
+    "quantity": 4,
+    "dependencies": [
+      "MINE:oak_log"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "MINE:oak_log",
+    "name": "oak_log",
+    "quantity": 1,
+    "dependencies": [],
+    "operation_type": "mine"
+  },
+  {
+    "id": "SMELT:smooth_stone",
+    "name": "smooth_stone",
+    "quantity": 64,
+    "dependencies": [
+      "SMELT:stone",
+      "CRAFT:furnace",
+      "CRAFT:oak_planks"
+    ],
+    "operation_type": "smelt"
+  },
+  {
+    "id": "SMELT:stone",
+    "name": "stone",
+    "quantity": 64,
+    "dependencies": [
+      "MINE:cobblestone",
+      "CRAFT:furnace",
+      "CRAFT:oak_planks"
+    ],
+    "operation_type": "smelt"
+  },
+  {
+    "id": "MINE:cobblestone",
+    "name": "cobblestone",
+    "quantity": 80,
+    "dependencies": [
+      "CRAFT:wooden_pickaxe"
+    ],
+    "operation_type": "mine"
+  },
+  {
+    "id": "CRAFT:wooden_pickaxe",
+    "name": "wooden_pickaxe",
+    "quantity": 4,
+    "dependencies": [
+      "CRAFT:oak_planks",
+      "CRAFT:stick",
+      "CRAFT:crafting_table"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "CRAFT:oak_planks",
+    "name": "oak_planks",
+    "quantity": 124,
+    "dependencies": [
+      "MINE:oak_log"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "MINE:oak_log",
+    "name": "oak_log",
+    "quantity": 34,
+    "dependencies": [],
+    "operation_type": "mine"
+  },
+  {
+    "id": "CRAFT:stick",
+    "name": "stick",
+    "quantity": 8,
+    "dependencies": [
+      "CRAFT:oak_planks"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "CRAFT:crafting_table",
+    "name": "crafting_table",
+    "quantity": 5,
+    "dependencies": [
+      "CRAFT:oak_planks"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "CRAFT:furnace",
+    "name": "furnace",
+    "quantity": 2,
+    "dependencies": [
+      "MINE:cobblestone",
+      "CRAFT:crafting_table"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "SMELT:terracotta",
+    "name": "terracotta",
+    "quantity": 82,
+    "dependencies": [
+      "CRAFT:clay",
+      "CRAFT:furnace",
+      "CRAFT:oak_planks"
+    ],
+    "operation_type": "smelt"
+  },
+  {
+    "id": "CRAFT:clay",
+    "name": "clay",
+    "quantity": 82,
+    "dependencies": [
+      "MINE:clay_ball"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "MINE:clay_ball",
+    "name": "clay_ball",
+    "quantity": 328,
+    "dependencies": [],
+    "operation_type": "mine"
+  },
+  {
+    "id": "CRAFT:furnace",
+    "name": "furnace",
+    "quantity": 1,
+    "dependencies": [
+      "MINE:cobblestone",
+      "CRAFT:crafting_table"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "MINE:cobblestone",
+    "name": "cobblestone",
+    "quantity": 8,
+    "dependencies": [
+      "CRAFT:wooden_pickaxe"
+    ],
+    "operation_type": "mine"
+  },
+  {
+    "id": "CRAFT:wooden_pickaxe",
+    "name": "wooden_pickaxe",
+    "quantity": 1,
+    "dependencies": [
+      "CRAFT:oak_planks",
+      "CRAFT:stick",
+      "CRAFT:crafting_table"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "CRAFT:oak_planks",
+    "name": "oak_planks",
+    "quantity": 68,
+    "dependencies": [
+      "MINE:oak_log"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "MINE:oak_log",
+    "name": "oak_log",
+    "quantity": 18,
+    "dependencies": [],
+    "operation_type": "mine"
+  },
+  {
+    "id": "CRAFT:stick",
+    "name": "stick",
+    "quantity": 2,
+    "dependencies": [
+      "CRAFT:oak_planks"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "CRAFT:crafting_table",
+    "name": "crafting_table",
+    "quantity": 2,
+    "dependencies": [
+      "CRAFT:oak_planks"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "CRAFT:bricks",
+    "name": "bricks",
+    "quantity": 48,
+    "dependencies": [
+      "SMELT:brick"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "SMELT:brick",
+    "name": "brick",
+    "quantity": 192,
+    "dependencies": [
+      "MINE:clay_ball",
+      "CRAFT:furnace",
+      "CRAFT:oak_planks"
+    ],
+    "operation_type": "smelt"
+  },
+  {
+    "id": "MINE:clay_ball",
+    "name": "clay_ball",
+    "quantity": 192,
+    "dependencies": [],
+    "operation_type": "mine"
+  },
+  {
+    "id": "CRAFT:furnace",
+    "name": "furnace",
+    "quantity": 1,
+    "dependencies": [
+      "MINE:cobblestone",
+      "CRAFT:crafting_table"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "MINE:cobblestone",
+    "name": "cobblestone",
+    "quantity": 8,
+    "dependencies": [
+      "CRAFT:wooden_pickaxe"
+    ],
+    "operation_type": "mine"
+  },
+  {
+    "id": "CRAFT:wooden_pickaxe",
+    "name": "wooden_pickaxe",
+    "quantity": 1,
+    "dependencies": [
+      "CRAFT:oak_planks",
+      "CRAFT:stick",
+      "CRAFT:crafting_table"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "CRAFT:oak_planks",
+    "name": "oak_planks",
+    "quantity": 141,
+    "dependencies": [
+      "MINE:oak_log"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "MINE:oak_log",
+    "name": "oak_log",
+    "quantity": 36,
+    "dependencies": [],
+    "operation_type": "mine"
+  },
+  {
+    "id": "CRAFT:stick",
+    "name": "stick",
+    "quantity": 2,
+    "dependencies": [
+      "CRAFT:oak_planks"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "CRAFT:crafting_table",
+    "name": "crafting_table",
+    "quantity": 2,
+    "dependencies": [
+      "CRAFT:oak_planks"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "SMELT:deepslate",
+    "name": "deepslate",
+    "quantity": 400,
+    "dependencies": [
+      "MINE:cobbled_deepslate",
+      "CRAFT:furnace",
+      "CRAFT:oak_planks"
+    ],
+    "operation_type": "smelt"
+  },
+  {
+    "id": "MINE:cobbled_deepslate",
+    "name": "cobbled_deepslate",
+    "quantity": 400,
+    "dependencies": [
+      "CRAFT:wooden_pickaxe"
+    ],
+    "operation_type": "mine"
+  },
+  {
+    "id": "CRAFT:wooden_pickaxe",
+    "name": "wooden_pickaxe",
+    "quantity": 8,
+    "dependencies": [
+      "CRAFT:oak_planks",
+      "CRAFT:stick",
+      "CRAFT:crafting_table"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "CRAFT:oak_planks",
+    "name": "oak_planks",
+    "quantity": 313,
+    "dependencies": [
+      "MINE:oak_log"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "MINE:oak_log",
+    "name": "oak_log",
+    "quantity": 80,
+    "dependencies": [],
+    "operation_type": "mine"
+  },
+  {
+    "id": "CRAFT:stick",
+    "name": "stick",
+    "quantity": 16,
+    "dependencies": [
+      "CRAFT:oak_planks"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "CRAFT:crafting_table",
+    "name": "crafting_table",
+    "quantity": 3,
+    "dependencies": [
+      "CRAFT:oak_planks"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "CRAFT:furnace",
+    "name": "furnace",
+    "quantity": 1,
+    "dependencies": [
+      "MINE:cobblestone",
+      "CRAFT:crafting_table"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "MINE:cobblestone",
+    "name": "cobblestone",
+    "quantity": 8,
+    "dependencies": [
+      "CRAFT:wooden_pickaxe"
+    ],
+    "operation_type": "mine"
+  },
+  {
+    "id": "CRAFT:oak_slab",
+    "name": "oak_slab",
+    "quantity": 96,
+    "dependencies": [
+      "CRAFT:oak_planks",
+      "CRAFT:crafting_table"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "CRAFT:oak_planks",
+    "name": "oak_planks",
+    "quantity": 52,
+    "dependencies": [
+      "MINE:oak_log"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "MINE:oak_log",
+    "name": "oak_log",
+    "quantity": 13,
+    "dependencies": [],
+    "operation_type": "mine"
+  },
+  {
+    "id": "CRAFT:crafting_table",
+    "name": "crafting_table",
+    "quantity": 1,
+    "dependencies": [
+      "CRAFT:oak_planks"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "MINE:stripped_spruce_log",
+    "name": "stripped_spruce_log",
+    "quantity": 32,
+    "dependencies": [],
+    "operation_type": "mine"
+  },
+  {
+    "id": "MINE:sand",
+    "name": "sand",
+    "quantity": 200,
+    "dependencies": [],
+    "operation_type": "mine"
+  },
+  {
+    "id": "MINE:gravel",
+    "name": "gravel",
+    "quantity": 150,
+    "dependencies": [],
+    "operation_type": "mine"
+  },
+  {
+    "id": "MINE:dirt",
+    "name": "dirt",
+    "quantity": 128,
+    "dependencies": [],
+    "operation_type": "mine"
+  },
+  {
+    "id": "SMELT:iron_ingot",
+    "name": "iron_ingot",
+    "quantity": 42,
+    "dependencies": [
+      "MINE:deepslate_iron_ore",
+      "CRAFT:furnace",
+      "CRAFT:oak_planks"
+    ],
+    "operation_type": "smelt"
+  },
+  {
+    "id": "MINE:deepslate_iron_ore",
+    "name": "deepslate_iron_ore",
+    "quantity": 42,
+    "dependencies": [
+      "CRAFT:stone_pickaxe"
+    ],
+    "operation_type": "mine"
+  },
+  {
+    "id": "CRAFT:stone_pickaxe",
+    "name": "stone_pickaxe",
+    "quantity": 1,
+    "dependencies": [
+      "MINE:cobblestone",
+      "CRAFT:stick",
+      "CRAFT:crafting_table"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "MINE:cobblestone",
+    "name": "cobblestone",
+    "quantity": 11,
+    "dependencies": [
+      "CRAFT:wooden_pickaxe"
+    ],
+    "operation_type": "mine"
+  },
+  {
+    "id": "CRAFT:wooden_pickaxe",
+    "name": "wooden_pickaxe",
+    "quantity": 2,
+    "dependencies": [
+      "CRAFT:oak_planks",
+      "CRAFT:stick",
+      "CRAFT:crafting_table"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "CRAFT:oak_planks",
+    "name": "oak_planks",
+    "quantity": 56,
+    "dependencies": [
+      "MINE:oak_log"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "MINE:oak_log",
+    "name": "oak_log",
+    "quantity": 16,
+    "dependencies": [],
+    "operation_type": "mine"
+  },
+  {
+    "id": "CRAFT:stick",
+    "name": "stick",
+    "quantity": 6,
+    "dependencies": [
+      "CRAFT:oak_planks"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "CRAFT:crafting_table",
+    "name": "crafting_table",
+    "quantity": 4,
+    "dependencies": [
+      "CRAFT:oak_planks"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "CRAFT:furnace",
+    "name": "furnace",
+    "quantity": 1,
+    "dependencies": [
+      "MINE:cobblestone",
+      "CRAFT:crafting_table"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "CRAFT:copper_block",
+    "name": "copper_block",
+    "quantity": 24,
+    "dependencies": [
+      "SMELT:copper_ingot",
+      "CRAFT:crafting_table"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "SMELT:copper_ingot",
+    "name": "copper_ingot",
+    "quantity": 216,
+    "dependencies": [
+      "MINE:copper_ore",
+      "CRAFT:furnace",
+      "CRAFT:oak_planks"
+    ],
+    "operation_type": "smelt"
+  },
+  {
+    "id": "MINE:copper_ore",
+    "name": "copper_ore",
+    "quantity": 216,
+    "dependencies": [
+      "CRAFT:stone_pickaxe"
+    ],
+    "operation_type": "mine"
+  },
+  {
+    "id": "CRAFT:stone_pickaxe",
+    "name": "stone_pickaxe",
+    "quantity": 2,
+    "dependencies": [
+      "MINE:cobblestone",
+      "CRAFT:stick",
+      "CRAFT:crafting_table"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "MINE:cobblestone",
+    "name": "cobblestone",
+    "quantity": 14,
+    "dependencies": [
+      "CRAFT:wooden_pickaxe"
+    ],
+    "operation_type": "mine"
+  },
+  {
+    "id": "CRAFT:wooden_pickaxe",
+    "name": "wooden_pickaxe",
+    "quantity": 2,
+    "dependencies": [
+      "CRAFT:oak_planks",
+      "CRAFT:stick",
+      "CRAFT:crafting_table"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "CRAFT:oak_planks",
+    "name": "oak_planks",
+    "quantity": 176,
+    "dependencies": [
+      "MINE:oak_log"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "MINE:oak_log",
+    "name": "oak_log",
+    "quantity": 46,
+    "dependencies": [],
+    "operation_type": "mine"
+  },
+  {
+    "id": "CRAFT:stick",
+    "name": "stick",
+    "quantity": 8,
+    "dependencies": [
+      "CRAFT:oak_planks"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "CRAFT:crafting_table",
+    "name": "crafting_table",
+    "quantity": 5,
+    "dependencies": [
+      "CRAFT:oak_planks"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "CRAFT:furnace",
+    "name": "furnace",
+    "quantity": 1,
+    "dependencies": [
+      "MINE:cobblestone",
+      "CRAFT:crafting_table"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "CRAFT:white_wool",
+    "name": "white_wool",
+    "quantity": 16,
+    "dependencies": [
+      "GATHER:string"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "GATHER:string",
+    "name": "string",
+    "quantity": 64,
+    "dependencies": [],
+    "operation_type": "gather"
+  },
+  {
+    "id": "MINE:clay_ball",
+    "name": "clay_ball",
+    "quantity": 60,
+    "dependencies": [],
+    "operation_type": "mine"
+  },
+  {
+    "id": "CRAFT:andesite",
+    "name": "andesite",
+    "quantity": 88,
+    "dependencies": [
+      "MINE:cobblestone",
+      "MINE:diorite"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "MINE:cobblestone",
+    "name": "cobblestone",
+    "quantity": 44,
+    "dependencies": [
+      "CRAFT:wooden_pickaxe"
+    ],
+    "operation_type": "mine"
+  },
+  {
+    "id": "CRAFT:wooden_pickaxe",
+    "name": "wooden_pickaxe",
+    "quantity": 2,
+    "dependencies": [
+      "CRAFT:oak_planks",
+      "CRAFT:stick",
+      "CRAFT:crafting_table"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "CRAFT:oak_planks",
+    "name": "oak_planks",
+    "quantity": 18,
+    "dependencies": [
+      "MINE:oak_log"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "MINE:oak_log",
+    "name": "oak_log",
+    "quantity": 6,
+    "dependencies": [],
+    "operation_type": "mine"
+  },
+  {
+    "id": "CRAFT:stick",
+    "name": "stick",
+    "quantity": 4,
+    "dependencies": [
+      "CRAFT:oak_planks"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "CRAFT:crafting_table",
+    "name": "crafting_table",
+    "quantity": 2,
+    "dependencies": [
+      "CRAFT:oak_planks"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "MINE:diorite",
+    "name": "diorite",
+    "quantity": 44,
+    "dependencies": [
+      "CRAFT:wooden_pickaxe"
+    ],
+    "operation_type": "mine"
+  }
+]

@@ -1,0 +1,1130 @@
+{
+  "_comment": "Filtered mine-only harvest catalog from minecraft-data (1.21.1). Includes items without craft/smelt recipes, plus explicit exceptions for crops, flowers, and wheat_seeds. Ore entries include junk/by-product using 90% confidence exploration volume; iron/diamond use constants/tools.json values when available.",
+  "acacia_leaves": {
+    "tool_class": "hoe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "acacia_log": {
+    "tool_class": "axe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "acacia_sapling": {
+    "tool_class": "axe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "allium": {
+    "tool_class": "none",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "amethyst_cluster": {
+    "tool_class": "pickaxe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "amethyst_shard": {
+    "tool_class": "pickaxe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "apple": {
+    "tool_class": "hoe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "azalea": {
+    "tool_class": "axe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "azalea_leaves": {
+    "tool_class": "hoe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "azure_bluet": {
+    "tool_class": "none",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "bamboo": {
+    "tool_class": "none",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "bee_nest": {
+    "tool_class": "axe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "beetroot": {
+    "tool_class": "axe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "beetroot_seeds": {
+    "tool_class": "axe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "bell": {
+    "tool_class": "pickaxe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "big_dripleaf": {
+    "tool_class": "axe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "birch_leaves": {
+    "tool_class": "hoe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "birch_log": {
+    "tool_class": "axe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "birch_sapling": {
+    "tool_class": "axe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "black_concrete": {
+    "tool_class": "pickaxe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "blue_concrete": {
+    "tool_class": "pickaxe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "blue_orchid": {
+    "tool_class": "none",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "brain_coral": {
+    "tool_class": "none",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "brain_coral_block": {
+    "tool_class": "pickaxe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "brain_coral_fan": {
+    "tool_class": "none",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "brown_concrete": {
+    "tool_class": "pickaxe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "brown_mushroom": {
+    "tool_class": "axe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "brown_mushroom_block": {
+    "tool_class": "axe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "bubble_coral": {
+    "tool_class": "none",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "bubble_coral_block": {
+    "tool_class": "pickaxe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "bubble_coral_fan": {
+    "tool_class": "none",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "cactus": {
+    "tool_class": "none",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "calcite": {
+    "tool_class": "pickaxe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "carrot": {
+    "tool_class": "axe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "carved_pumpkin": {
+    "tool_class": "axe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "cherry_leaves": {
+    "tool_class": "hoe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "cherry_log": {
+    "tool_class": "axe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "cherry_sapling": {
+    "tool_class": "axe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "chipped_anvil": {
+    "tool_class": "pickaxe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "clay_ball": {
+    "tool_class": "shovel",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "coal_ore": {
+    "tool_class": "pickaxe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false,
+    "junk/by-product": {
+      "item": "stone",
+      "quantity": 230
+    }
+  },
+  "cobbled_deepslate": {
+    "tool_class": "pickaxe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "cobblestone": {
+    "tool_class": "pickaxe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "cobweb": {
+    "tool_class": "sword",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "cocoa_beans": {
+    "tool_class": "axe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "copper_ore": {
+    "tool_class": "pickaxe",
+    "min_tier": "stone",
+    "hand_insta_harvest_possible": false,
+    "junk/by-product": {
+      "item": "stone",
+      "quantity": 230
+    }
+  },
+  "cornflower": {
+    "tool_class": "none",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "creeper_head": {
+    "tool_class": "none",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "crying_obsidian": {
+    "tool_class": "pickaxe",
+    "min_tier": "diamond",
+    "hand_insta_harvest_possible": false
+  },
+  "cyan_concrete": {
+    "tool_class": "pickaxe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "damaged_anvil": {
+    "tool_class": "pickaxe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "dandelion": {
+    "tool_class": "none",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "dark_oak_leaves": {
+    "tool_class": "hoe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "dark_oak_log": {
+    "tool_class": "axe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "dark_oak_sapling": {
+    "tool_class": "axe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "dead_brain_coral": {
+    "tool_class": "pickaxe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "dead_brain_coral_block": {
+    "tool_class": "pickaxe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "dead_brain_coral_fan": {
+    "tool_class": "pickaxe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "dead_bubble_coral": {
+    "tool_class": "pickaxe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "dead_bubble_coral_block": {
+    "tool_class": "pickaxe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "dead_bubble_coral_fan": {
+    "tool_class": "pickaxe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "dead_bush": {
+    "tool_class": "axe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "dead_fire_coral": {
+    "tool_class": "pickaxe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "dead_fire_coral_block": {
+    "tool_class": "pickaxe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "dead_fire_coral_fan": {
+    "tool_class": "pickaxe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "dead_horn_coral": {
+    "tool_class": "pickaxe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "dead_horn_coral_block": {
+    "tool_class": "pickaxe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "dead_horn_coral_fan": {
+    "tool_class": "pickaxe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "dead_tube_coral": {
+    "tool_class": "pickaxe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "dead_tube_coral_block": {
+    "tool_class": "pickaxe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "dead_tube_coral_fan": {
+    "tool_class": "pickaxe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "deepslate_coal_ore": {
+    "tool_class": "pickaxe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false,
+    "junk/by-product": {
+      "item": "cobbled_deepslate",
+      "quantity": 230
+    }
+  },
+  "deepslate_copper_ore": {
+    "tool_class": "pickaxe",
+    "min_tier": "stone",
+    "hand_insta_harvest_possible": false,
+    "junk/by-product": {
+      "item": "cobbled_deepslate",
+      "quantity": 230
+    }
+  },
+  "deepslate_diamond_ore": {
+    "tool_class": "pickaxe",
+    "min_tier": "iron",
+    "hand_insta_harvest_possible": false,
+    "junk/by-product": {
+      "item": "cobbled_deepslate",
+      "quantity": 600
+    }
+  },
+  "deepslate_emerald_ore": {
+    "tool_class": "pickaxe",
+    "min_tier": "iron",
+    "hand_insta_harvest_possible": false,
+    "junk/by-product": {
+      "item": "cobbled_deepslate",
+      "quantity": 1151
+    }
+  },
+  "deepslate_gold_ore": {
+    "tool_class": "pickaxe",
+    "min_tier": "iron",
+    "hand_insta_harvest_possible": false,
+    "junk/by-product": {
+      "item": "cobbled_deepslate",
+      "quantity": 575
+    }
+  },
+  "deepslate_iron_ore": {
+    "tool_class": "pickaxe",
+    "min_tier": "stone",
+    "hand_insta_harvest_possible": false,
+    "junk/by-product": {
+      "item": "cobbled_deepslate",
+      "quantity": 180
+    }
+  },
+  "deepslate_lapis_ore": {
+    "tool_class": "pickaxe",
+    "min_tier": "stone",
+    "hand_insta_harvest_possible": false,
+    "junk/by-product": {
+      "item": "cobbled_deepslate",
+      "quantity": 1151
+    }
+  },
+  "deepslate_redstone_ore": {
+    "tool_class": "pickaxe",
+    "min_tier": "iron",
+    "hand_insta_harvest_possible": false,
+    "junk/by-product": {
+      "item": "cobbled_deepslate",
+      "quantity": 191
+    }
+  },
+  "dirt": {
+    "tool_class": "shovel",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "dragon_egg": {
+    "tool_class": "none",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "dragon_head": {
+    "tool_class": "none",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "emerald_ore": {
+    "tool_class": "pickaxe",
+    "min_tier": "iron",
+    "hand_insta_harvest_possible": false,
+    "junk/by-product": {
+      "item": "stone",
+      "quantity": 1151
+    }
+  },
+  "exposed_copper": {
+    "tool_class": "pickaxe",
+    "min_tier": "stone",
+    "hand_insta_harvest_possible": false
+  },
+  "fern": {
+    "tool_class": "axe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "fire_coral": {
+    "tool_class": "none",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "fire_coral_block": {
+    "tool_class": "pickaxe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "fire_coral_fan": {
+    "tool_class": "none",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "flint": {
+    "tool_class": "shovel",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "flowering_azalea": {
+    "tool_class": "axe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "flowering_azalea_leaves": {
+    "tool_class": "hoe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "glow_berries": {
+    "tool_class": "axe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "glow_lichen": {
+    "tool_class": "axe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "grass": {
+    "tool_class": "axe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "grass_block": {
+    "tool_class": "shovel",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "gravel": {
+    "tool_class": "shovel",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "gray_concrete": {
+    "tool_class": "pickaxe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "green_concrete": {
+    "tool_class": "pickaxe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "hanging_roots": {
+    "tool_class": "axe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "horn_coral": {
+    "tool_class": "none",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "horn_coral_block": {
+    "tool_class": "pickaxe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "horn_coral_fan": {
+    "tool_class": "none",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "ice": {
+    "tool_class": "pickaxe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "iron_ore": {
+    "tool_class": "pickaxe",
+    "min_tier": "stone",
+    "hand_insta_harvest_possible": false,
+    "junk/by-product": {
+      "item": "stone",
+      "quantity": 180
+    }
+  },
+  "jungle_leaves": {
+    "tool_class": "hoe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "jungle_log": {
+    "tool_class": "axe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "jungle_sapling": {
+    "tool_class": "axe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "kelp": {
+    "tool_class": "none",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "lapis_ore": {
+    "tool_class": "pickaxe",
+    "min_tier": "stone",
+    "hand_insta_harvest_possible": false,
+    "junk/by-product": {
+      "item": "stone",
+      "quantity": 1151
+    }
+  },
+  "large_amethyst_bud": {
+    "tool_class": "pickaxe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "light_blue_concrete": {
+    "tool_class": "pickaxe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "light_gray_concrete": {
+    "tool_class": "pickaxe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "lilac": {
+    "tool_class": "none",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "lily_of_the_valley": {
+    "tool_class": "none",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "lily_pad": {
+    "tool_class": "axe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "lime_concrete": {
+    "tool_class": "pickaxe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "magenta_concrete": {
+    "tool_class": "pickaxe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "mangrove_leaves": {
+    "tool_class": "hoe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "mangrove_log": {
+    "tool_class": "axe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "mangrove_propagule": {
+    "tool_class": "axe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "mangrove_roots": {
+    "tool_class": "axe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "medium_amethyst_bud": {
+    "tool_class": "pickaxe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "melon": {
+    "tool_class": "axe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "melon_slice": {
+    "tool_class": "axe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "moss_block": {
+    "tool_class": "hoe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "mud": {
+    "tool_class": "shovel",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "mushroom_stem": {
+    "tool_class": "axe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "mycelium": {
+    "tool_class": "shovel",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "oak_leaves": {
+    "tool_class": "hoe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "oak_log": {
+    "tool_class": "axe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "oak_sapling": {
+    "tool_class": "axe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "obsidian": {
+    "tool_class": "pickaxe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "ochre_froglight": {
+    "tool_class": "none",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "orange_concrete": {
+    "tool_class": "pickaxe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "orange_tulip": {
+    "tool_class": "none",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "oxeye_daisy": {
+    "tool_class": "none",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "oxidized_copper": {
+    "tool_class": "pickaxe",
+    "min_tier": "stone",
+    "hand_insta_harvest_possible": false
+  },
+  "pearlescent_froglight": {
+    "tool_class": "none",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "peony": {
+    "tool_class": "none",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "petrified_oak_slab": {
+    "tool_class": "pickaxe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "pink_concrete": {
+    "tool_class": "pickaxe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "pink_petals": {
+    "tool_class": "none",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "pink_tulip": {
+    "tool_class": "none",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "pitcher_plant": {
+    "tool_class": "none",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "pitcher_pod": {
+    "tool_class": "none",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "player_head": {
+    "tool_class": "none",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "podzol": {
+    "tool_class": "shovel",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "pointed_dripstone": {
+    "tool_class": "pickaxe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "poisonous_potato": {
+    "tool_class": "axe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "poppy": {
+    "tool_class": "none",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "potato": {
+    "tool_class": "axe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "prismarine_crystals": {
+    "tool_class": "none",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "pumpkin": {
+    "tool_class": "axe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "purple_concrete": {
+    "tool_class": "pickaxe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "raw_copper": {
+    "tool_class": "pickaxe",
+    "min_tier": "stone",
+    "hand_insta_harvest_possible": false
+  },
+  "raw_gold": {
+    "tool_class": "pickaxe",
+    "min_tier": "iron",
+    "hand_insta_harvest_possible": false
+  },
+  "raw_iron": {
+    "tool_class": "pickaxe",
+    "min_tier": "stone",
+    "hand_insta_harvest_possible": false
+  },
+  "red_concrete": {
+    "tool_class": "pickaxe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "red_mushroom": {
+    "tool_class": "none",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "red_mushroom_block": {
+    "tool_class": "axe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "red_sand": {
+    "tool_class": "shovel",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "red_tulip": {
+    "tool_class": "none",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "rooted_dirt": {
+    "tool_class": "shovel",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "rose_bush": {
+    "tool_class": "none",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "sand": {
+    "tool_class": "shovel",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "sculk": {
+    "tool_class": "hoe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "sculk_catalyst": {
+    "tool_class": "hoe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "sculk_sensor": {
+    "tool_class": "hoe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "sculk_shrieker": {
+    "tool_class": "hoe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "sculk_vein": {
+    "tool_class": "hoe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "sea_pickle": {
+    "tool_class": "none",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "seagrass": {
+    "tool_class": "none",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "skeleton_skull": {
+    "tool_class": "none",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "small_amethyst_bud": {
+    "tool_class": "pickaxe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "small_dripleaf": {
+    "tool_class": "axe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "sniffer_egg": {
+    "tool_class": "none",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "snowball": {
+    "tool_class": "shovel",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "spore_blossom": {
+    "tool_class": "axe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "spruce_leaves": {
+    "tool_class": "hoe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "spruce_log": {
+    "tool_class": "axe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "spruce_sapling": {
+    "tool_class": "none",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "string": {
+    "tool_class": "none",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "stripped_acacia_log": {
+    "tool_class": "axe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "stripped_bamboo_block": {
+    "tool_class": "axe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "stripped_birch_log": {
+    "tool_class": "axe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "stripped_cherry_log": {
+    "tool_class": "axe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "stripped_dark_oak_log": {
+    "tool_class": "axe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "stripped_jungle_log": {
+    "tool_class": "axe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "stripped_mangrove_log": {
+    "tool_class": "axe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "stripped_oak_log": {
+    "tool_class": "axe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "stripped_spruce_log": {
+    "tool_class": "axe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "sugar_cane": {
+    "tool_class": "axe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "sunflower": {
+    "tool_class": "none",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "sweet_berries": {
+    "tool_class": "axe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "torchflower": {
+    "tool_class": "none",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "torchflower_seeds": {
+    "tool_class": "none",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "tube_coral": {
+    "tool_class": "none",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "tube_coral_block": {
+    "tool_class": "pickaxe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "tube_coral_fan": {
+    "tool_class": "none",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "tuff": {
+    "tool_class": "pickaxe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "turtle_egg": {
+    "tool_class": "none",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "twisting_vines": {
+    "tool_class": "axe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "verdant_froglight": {
+    "tool_class": "none",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "vine": {
+    "tool_class": "axe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "weathered_copper": {
+    "tool_class": "pickaxe",
+    "min_tier": "stone",
+    "hand_insta_harvest_possible": false
+  },
+  "weeping_vines": {
+    "tool_class": "axe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "wet_sponge": {
+    "tool_class": "hoe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "wheat": {
+    "tool_class": "axe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "wheat_seeds": {
+    "tool_class": "axe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "white_concrete": {
+    "tool_class": "pickaxe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "white_tulip": {
+    "tool_class": "none",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "wither_rose": {
+    "tool_class": "none",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": true
+  },
+  "wither_skeleton_skull": {
+    "tool_class": "none",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "yellow_concrete": {
+    "tool_class": "pickaxe",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  },
+  "zombie_head": {
+    "tool_class": "none",
+    "min_tier": "wooden",
+    "hand_insta_harvest_possible": false
+  }
+}
