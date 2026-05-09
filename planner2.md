@@ -171,8 +171,11 @@ Execute Kahn's Algorithm topological sort to generate the final linear execution
 * **Simulation Mechanics (Strict Physics):** * Track inventory by **SLOTS**, not pure quantities (64 stackable items = 1 slot; unstackables/tools = 1 slot).
     * Track tool durability dynamically. If the bot executes a mine task without the required tool, or if the tool breaks mid-task and no replacement is in the inventory, throw a fatal exception.
 * **Cache Lookahead:** The compiler assumes a static **Base Camp** coordinate where the Crafting Table, Furnace, and Storage Chests physically reside.
-    * The moment 30 / 36 slots are occupied, inject a `Maps_TO_BASE` task, trigger chest creation, and toss items not immediately required. Check the next `N=4` downstream tasks to determine what to keep.
-    * Any subsequent tasks requiring stashed items MUST also be preceded by a `Maps_TO_BASE` task.
+    * toss items not required in any remaining tasks.
+    * The moment 28 / 36 slots(configurable with config) are occupied, inject a `Stash` task, trigger chest creation, and stash items not immediately required. Empty 8 slots into chests with items not immediately needed by analyzing the next immediate downstream tasks and checking their requirement. with the items in the remaining 20 slots, next immediate tasks should always be executable by meeting their requirement. Each chest should have a unique id assigned to it.
+    * Any subsequent tasks requiring stashed items MUST be preceded by a `Go_To_Chest` task to indicate going to the particular chest where the items are stashed. This is determined by checking the inventory for missing items and locating them by finding the chest where they are stashed. this can be checked through task history.
+    * Adding chest craft requires additional planks and logs. For each craft chest task injected(do this once all chests crafts are calculated and finalized), add the logs overhead needed to bulk mining log tasks in the beggining. For large overheads, more tools may be needed so that also be propogated in the task chain.
+
 * **Output:** 1. If failed: Exit specifying the exact physics failure reason.
     2. In both success and failure: Generate the inventory simulation as a 2D array for each task.
-    3. Generate a linear `.mmd` (Mermaid) flowchart from the final generated queue.
+    3. Generate a linear html from the final generated queue.

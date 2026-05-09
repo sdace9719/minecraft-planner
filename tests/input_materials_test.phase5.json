@@ -647,6 +647,7 @@
     "quantity": 64,
     "dependencies": [
       "MINE:copper_ore_chunk_1",
+      "MINE:copper_ore_chunk_1_shard_CRAFT:stone_pickaxe_chunk_1",
       "CRAFT:furnace_chunk_1",
       "CRAFT:oak_planks_chunk_3",
       "CRAFT:oak_planks_chunk_4"
@@ -845,7 +846,7 @@
     "name": "stone_shovel",
     "quantity": 1,
     "dependencies": [
-      "MINE:cobblestone_chunk_7",
+      "MINE:cobblestone_chunk_5_shard_CRAFT:stone_pickaxe_chunk_7",
       "CRAFT:stick_chunk_1",
       "CRAFT:crafting_table_chunk_1",
       "MINE:sand_chunk_3_shard_CRAFT:stone_shovel_chunk_5"
@@ -897,7 +898,7 @@
     "name": "stone_shovel",
     "quantity": 1,
     "dependencies": [
-      "MINE:cobblestone_chunk_7",
+      "MINE:cobblestone_chunk_6",
       "CRAFT:stick_chunk_1",
       "CRAFT:crafting_table_chunk_1",
       "MINE:gravel_chunk_4_shard_CRAFT:stone_shovel_chunk_6"
@@ -928,7 +929,7 @@
     "name": "stone_shovel",
     "quantity": 1,
     "dependencies": [
-      "MINE:cobblestone_chunk_7",
+      "MINE:cobblestone_chunk_6",
       "CRAFT:stick_chunk_1",
       "CRAFT:crafting_table_chunk_1",
       "MINE:clay_ball_chunk_5_shard_CRAFT:stone_shovel_chunk_7"
@@ -988,7 +989,7 @@
     "name": "stone_shovel",
     "quantity": 1,
     "dependencies": [
-      "MINE:cobblestone_chunk_7",
+      "MINE:cobblestone_chunk_6",
       "CRAFT:stick_chunk_1",
       "CRAFT:crafting_table_chunk_1",
       "MINE:sand_chunk_5_shard_CRAFT:stone_shovel_chunk_8"
@@ -1028,7 +1029,7 @@
     "name": "stone_shovel",
     "quantity": 1,
     "dependencies": [
-      "MINE:cobblestone_chunk_7",
+      "MINE:cobblestone_chunk_6",
       "CRAFT:stick_chunk_1",
       "CRAFT:crafting_table_chunk_1",
       "MINE:sand_chunk_6_shard_CRAFT:stone_shovel_chunk_9"
@@ -1078,7 +1079,7 @@
     "name": "stone_shovel",
     "quantity": 1,
     "dependencies": [
-      "MINE:cobblestone_chunk_7",
+      "MINE:cobblestone_chunk_6",
       "CRAFT:stick_chunk_1",
       "CRAFT:crafting_table_chunk_1",
       "MINE:sand_chunk_7_shard_CRAFT:stone_shovel_chunk_10"
@@ -1118,7 +1119,7 @@
     "name": "stone_shovel",
     "quantity": 1,
     "dependencies": [
-      "MINE:cobblestone_chunk_7",
+      "MINE:cobblestone_chunk_6",
       "CRAFT:stick_chunk_1",
       "CRAFT:crafting_table_chunk_1",
       "MINE:sand_chunk_8_shard_CRAFT:stone_shovel_chunk_11"
@@ -1415,8 +1416,8 @@
     "name": "brick",
     "quantity": 64,
     "dependencies": [
+      "MINE:clay_ball_chunk_3",
       "MINE:clay_ball_chunk_3_shard_CRAFT:stone_shovel_chunk_4",
-      "MINE:clay_ball_chunk_8",
       "CRAFT:furnace_chunk_1",
       "CRAFT:oak_planks_chunk_12"
     ],
@@ -1447,9 +1448,8 @@
     "name": "brick",
     "quantity": 64,
     "dependencies": [
+      "MINE:clay_ball_chunk_2",
       "MINE:clay_ball_chunk_2_shard_CRAFT:stone_shovel_chunk_2",
-      "MINE:clay_ball_chunk_7",
-      "MINE:clay_ball_chunk_8",
       "CRAFT:furnace_chunk_1",
       "CRAFT:oak_planks_chunk_8",
       "CRAFT:oak_planks_chunk_9"
@@ -1481,7 +1481,6 @@
     "name": "copper_ingot",
     "quantity": 64,
     "dependencies": [
-      "MINE:copper_ore_chunk_1_shard_CRAFT:stone_pickaxe_chunk_1",
       "MINE:copper_ore_chunk_2",
       "CRAFT:furnace_chunk_1",
       "CRAFT:oak_planks_chunk_9",
@@ -1514,8 +1513,8 @@
     "name": "stone",
     "quantity": 64,
     "dependencies": [
+      "MINE:cobblestone_chunk_2",
       "MINE:cobblestone_chunk_2_shard_CRAFT:stone_pickaxe_chunk_3",
-      "MINE:cobblestone_chunk_5",
       "CRAFT:furnace_chunk_1",
       "CRAFT:oak_planks_chunk_11",
       "CRAFT:oak_planks_chunk_12"
@@ -1533,107 +1532,6 @@
       "CRAFT:oak_planks_chunk_11"
     ],
     "operation_type": "smelt"
-  },
-  {
-    "id": "CRAFT:oak_planks_chunk_13",
-    "name": "oak_planks",
-    "quantity": 64,
-    "dependencies": [
-      "MINE:oak_log_chunk_3"
-    ],
-    "operation_type": "craft"
-  },
-  {
-    "id": "SMELT:copper_ingot_chunk_3",
-    "name": "copper_ingot",
-    "quantity": 64,
-    "dependencies": [
-      "MINE:copper_ore_chunk_2",
-      "MINE:copper_ore_chunk_3",
-      "CRAFT:furnace_chunk_1",
-      "CRAFT:oak_planks_chunk_12",
-      "CRAFT:oak_planks_chunk_13"
-    ],
-    "operation_type": "smelt"
-  },
-  {
-    "id": "CRAFT:oak_planks_chunk_14",
-    "name": "oak_planks",
-    "quantity": 64,
-    "dependencies": [
-      "MINE:oak_log_chunk_3"
-    ],
-    "operation_type": "craft"
-  },
-  {
-    "id": "SMELT:deepslate_chunk_3",
-    "name": "deepslate",
-    "quantity": 64,
-    "dependencies": [
-      "MINE:cobbled_deepslate_chunk_3",
-      "CRAFT:furnace_chunk_1",
-      "CRAFT:oak_planks_chunk_13",
-      "CRAFT:oak_planks_chunk_14"
-    ],
-    "operation_type": "smelt"
-  },
-  {
-    "id": "SMELT:glass_chunk_3",
-    "name": "glass",
-    "quantity": 32,
-    "dependencies": [
-      "MINE:sand_chunk_4",
-      "CRAFT:furnace_chunk_1",
-      "CRAFT:oak_planks_chunk_14"
-    ],
-    "operation_type": "smelt"
-  },
-  {
-    "id": "CRAFT:oak_planks_chunk_15",
-    "name": "oak_planks",
-    "quantity": 64,
-    "dependencies": [
-      "MINE:oak_log_chunk_3"
-    ],
-    "operation_type": "craft"
-  },
-  {
-    "id": "SMELT:stone_chunk_3",
-    "name": "stone",
-    "quantity": 64,
-    "dependencies": [
-      "MINE:cobblestone_chunk_5",
-      "MINE:cobblestone_chunk_6",
-      "CRAFT:furnace_chunk_1",
-      "CRAFT:oak_planks_chunk_14",
-      "CRAFT:oak_planks_chunk_15"
-    ],
-    "operation_type": "smelt"
-  },
-  {
-    "id": "SMELT:copper_ingot_chunk_4",
-    "name": "copper_ingot",
-    "quantity": 24,
-    "dependencies": [
-      "MINE:copper_ore_chunk_3",
-      "MINE:copper_ore_chunk_4",
-      "CRAFT:furnace_chunk_1",
-      "CRAFT:oak_planks_chunk_15"
-    ],
-    "operation_type": "smelt"
-  },
-  {
-    "id": "CRAFT:copper_block_chunk_1",
-    "name": "copper_block",
-    "quantity": 24,
-    "dependencies": [
-      "SMELT:copper_ingot_chunk_1",
-      "SMELT:copper_ingot_chunk_2",
-      "SMELT:copper_ingot_chunk_3",
-      "SMELT:copper_ingot_chunk_4",
-      "CRAFT:crafting_table_chunk_1"
-    ],
-    "operation_type": "craft"
   },
   {
     "id": "MINE:oak_log_chunk_4",
@@ -1657,6 +1555,70 @@
     "operation_type": "craft"
   },
   {
+    "id": "CRAFT:oak_planks_chunk_17",
+    "name": "oak_planks",
+    "quantity": 64,
+    "dependencies": [
+      "MINE:oak_log_chunk_4"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "CRAFT:oak_planks_chunk_18",
+    "name": "oak_planks",
+    "quantity": 64,
+    "dependencies": [
+      "MINE:oak_log_chunk_4"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "SMELT:stone_chunk_5",
+    "name": "stone",
+    "quantity": 64,
+    "dependencies": [
+      "MINE:cobblestone_chunk_5",
+      "MINE:cobblestone_chunk_6",
+      "MINE:cobblestone_chunk_5_shard_CRAFT:stone_pickaxe_chunk_7",
+      "CRAFT:furnace_chunk_1",
+      "CRAFT:oak_planks_chunk_17",
+      "CRAFT:oak_planks_chunk_18"
+    ],
+    "operation_type": "smelt"
+  },
+  {
+    "id": "SMELT:deepslate_chunk_6",
+    "name": "deepslate",
+    "quantity": 64,
+    "dependencies": [
+      "MINE:cobbled_deepslate_chunk_6",
+      "CRAFT:furnace_chunk_1",
+      "CRAFT:oak_planks_chunk_18"
+    ],
+    "operation_type": "smelt"
+  },
+  {
+    "id": "CRAFT:oak_planks_chunk_19",
+    "name": "oak_planks",
+    "quantity": 4,
+    "dependencies": [
+      "MINE:oak_log_chunk_4"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "SMELT:deepslate_chunk_7",
+    "name": "deepslate",
+    "quantity": 16,
+    "dependencies": [
+      "MINE:cobbled_deepslate_chunk_7",
+      "CRAFT:furnace_chunk_1",
+      "CRAFT:oak_planks_chunk_18",
+      "CRAFT:oak_planks_chunk_19"
+    ],
+    "operation_type": "smelt"
+  },
+  {
     "id": "MINE:oak_log_chunk_5_shard_CRAFT:stone_axe_chunk_3",
     "name": "oak_log",
     "quantity": 58,
@@ -1670,21 +1632,20 @@
     "name": "oak_planks",
     "quantity": 64,
     "dependencies": [
-      "MINE:oak_log_chunk_3",
-      "MINE:oak_log_chunk_5_shard_CRAFT:stone_axe_chunk_3"
+      "MINE:oak_log_chunk_5_shard_CRAFT:stone_axe_chunk_3",
+      "MINE:oak_log_chunk_4"
     ],
     "operation_type": "craft"
   },
   {
-    "id": "SMELT:deepslate_chunk_4",
+    "id": "SMELT:deepslate_chunk_5",
     "name": "deepslate",
     "quantity": 64,
     "dependencies": [
-      "MINE:cobbled_deepslate_chunk_3_shard_CRAFT:stone_pickaxe_chunk_4",
-      "MINE:cobbled_deepslate_chunk_4",
+      "MINE:cobbled_deepslate_chunk_5",
       "CRAFT:furnace_chunk_1",
-      "CRAFT:oak_planks_chunk_15",
-      "CRAFT:oak_planks_chunk_16"
+      "CRAFT:oak_planks_chunk_16",
+      "CRAFT:oak_planks_chunk_17"
     ],
     "operation_type": "smelt"
   },
@@ -1693,8 +1654,8 @@
     "name": "stone",
     "quantity": 64,
     "dependencies": [
+      "MINE:cobblestone_chunk_4",
       "MINE:cobblestone_chunk_4_shard_CRAFT:stone_pickaxe_chunk_6",
-      "MINE:cobblestone_chunk_6",
       "CRAFT:furnace_chunk_1",
       "CRAFT:oak_planks_chunk_16"
     ],
@@ -1711,7 +1672,7 @@
     "operation_type": "mine"
   },
   {
-    "id": "CRAFT:oak_planks_chunk_17",
+    "id": "CRAFT:oak_planks_chunk_13",
     "name": "oak_planks",
     "quantity": 64,
     "dependencies": [
@@ -1720,73 +1681,109 @@
     "operation_type": "craft"
   },
   {
-    "id": "SMELT:deepslate_chunk_5",
+    "id": "SMELT:copper_ingot_chunk_3",
+    "name": "copper_ingot",
+    "quantity": 64,
+    "dependencies": [
+      "MINE:copper_ore_chunk_3",
+      "MINE:copper_ore_chunk_4",
+      "MINE:copper_ore_chunk_3_shard_CRAFT:stone_pickaxe_chunk_5",
+      "CRAFT:furnace_chunk_1",
+      "CRAFT:oak_planks_chunk_12",
+      "CRAFT:oak_planks_chunk_13"
+    ],
+    "operation_type": "smelt"
+  },
+  {
+    "id": "CRAFT:oak_planks_chunk_14",
+    "name": "oak_planks",
+    "quantity": 64,
+    "dependencies": [
+      "MINE:oak_log_chunk_5_shard_CRAFT:stone_axe_chunk_3"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "SMELT:deepslate_chunk_3",
+    "name": "deepslate",
+    "quantity": 64,
+    "dependencies": [
+      "MINE:cobbled_deepslate_chunk_3",
+      "MINE:cobbled_deepslate_chunk_3_shard_CRAFT:stone_pickaxe_chunk_4",
+      "CRAFT:furnace_chunk_1",
+      "CRAFT:oak_planks_chunk_13",
+      "CRAFT:oak_planks_chunk_14"
+    ],
+    "operation_type": "smelt"
+  },
+  {
+    "id": "SMELT:glass_chunk_3",
+    "name": "glass",
+    "quantity": 32,
+    "dependencies": [
+      "MINE:sand_chunk_3",
+      "CRAFT:furnace_chunk_1",
+      "CRAFT:oak_planks_chunk_14"
+    ],
+    "operation_type": "smelt"
+  },
+  {
+    "id": "CRAFT:oak_planks_chunk_15",
+    "name": "oak_planks",
+    "quantity": 64,
+    "dependencies": [
+      "MINE:oak_log_chunk_5_shard_CRAFT:stone_axe_chunk_3"
+    ],
+    "operation_type": "craft"
+  },
+  {
+    "id": "SMELT:stone_chunk_3",
+    "name": "stone",
+    "quantity": 64,
+    "dependencies": [
+      "MINE:cobblestone_chunk_5",
+      "MINE:cobblestone_chunk_6",
+      "CRAFT:furnace_chunk_1",
+      "CRAFT:oak_planks_chunk_14",
+      "CRAFT:oak_planks_chunk_15"
+    ],
+    "operation_type": "smelt"
+  },
+  {
+    "id": "SMELT:deepslate_chunk_4",
     "name": "deepslate",
     "quantity": 64,
     "dependencies": [
       "MINE:cobbled_deepslate_chunk_4",
-      "MINE:cobbled_deepslate_chunk_5",
       "CRAFT:furnace_chunk_1",
-      "CRAFT:oak_planks_chunk_16",
-      "CRAFT:oak_planks_chunk_17"
+      "CRAFT:oak_planks_chunk_15",
+      "CRAFT:oak_planks_chunk_16"
     ],
     "operation_type": "smelt"
   },
   {
-    "id": "CRAFT:oak_planks_chunk_18",
-    "name": "oak_planks",
-    "quantity": 64,
+    "id": "SMELT:copper_ingot_chunk_4",
+    "name": "copper_ingot",
+    "quantity": 24,
     "dependencies": [
-      "MINE:oak_log_chunk_5_shard_CRAFT:stone_axe_chunk_3"
+      "MINE:copper_ore_chunk_3_shard_CRAFT:stone_pickaxe_chunk_5",
+      "CRAFT:furnace_chunk_1",
+      "CRAFT:oak_planks_chunk_15"
+    ],
+    "operation_type": "smelt"
+  },
+  {
+    "id": "CRAFT:copper_block_chunk_1",
+    "name": "copper_block",
+    "quantity": 24,
+    "dependencies": [
+      "SMELT:copper_ingot_chunk_1",
+      "SMELT:copper_ingot_chunk_2",
+      "SMELT:copper_ingot_chunk_3",
+      "SMELT:copper_ingot_chunk_4",
+      "CRAFT:crafting_table_chunk_1"
     ],
     "operation_type": "craft"
-  },
-  {
-    "id": "SMELT:stone_chunk_5",
-    "name": "stone",
-    "quantity": 64,
-    "dependencies": [
-      "MINE:cobblestone_chunk_6",
-      "MINE:cobblestone_chunk_5_shard_CRAFT:stone_pickaxe_chunk_7",
-      "MINE:cobblestone_chunk_7",
-      "CRAFT:furnace_chunk_1",
-      "CRAFT:oak_planks_chunk_17",
-      "CRAFT:oak_planks_chunk_18"
-    ],
-    "operation_type": "smelt"
-  },
-  {
-    "id": "SMELT:deepslate_chunk_6",
-    "name": "deepslate",
-    "quantity": 64,
-    "dependencies": [
-      "MINE:cobbled_deepslate_chunk_5",
-      "MINE:cobbled_deepslate_chunk_6",
-      "CRAFT:furnace_chunk_1",
-      "CRAFT:oak_planks_chunk_18"
-    ],
-    "operation_type": "smelt"
-  },
-  {
-    "id": "CRAFT:oak_planks_chunk_19",
-    "name": "oak_planks",
-    "quantity": 4,
-    "dependencies": [
-      "MINE:oak_log_chunk_5_shard_CRAFT:stone_axe_chunk_3"
-    ],
-    "operation_type": "craft"
-  },
-  {
-    "id": "SMELT:deepslate_chunk_7",
-    "name": "deepslate",
-    "quantity": 16,
-    "dependencies": [
-      "MINE:cobbled_deepslate_chunk_6",
-      "CRAFT:furnace_chunk_1",
-      "CRAFT:oak_planks_chunk_18",
-      "CRAFT:oak_planks_chunk_19"
-    ],
-    "operation_type": "smelt"
   },
   {
     "id": "SWORD:bone_chunk_1",
@@ -1822,8 +1819,8 @@
     "dependencies": [
       "MINE:gravel_chunk_2",
       "MINE:gravel_chunk_2_shard_CRAFT:stone_shovel_chunk_3",
-      "MINE:gravel_chunk_3",
-      "MINE:sand_chunk_5",
+      "MINE:sand_chunk_4",
+      "MINE:sand_chunk_3_shard_CRAFT:stone_shovel_chunk_5",
       "CRAFT:white_dye_chunk_1"
     ],
     "operation_type": "craft"
@@ -1833,8 +1830,8 @@
     "name": "white_concrete_powder",
     "quantity": 64,
     "dependencies": [
+      "MINE:gravel_chunk_1",
       "MINE:gravel_chunk_1_shard_CRAFT:stone_shovel_chunk_1",
-      "MINE:gravel_chunk_2",
       "MINE:sand_chunk_4",
       "CRAFT:white_dye_chunk_1"
     ],
@@ -1846,8 +1843,8 @@
     "quantity": 64,
     "dependencies": [
       "MINE:gravel_chunk_2",
-      "MINE:sand_chunk_3_shard_CRAFT:stone_shovel_chunk_5",
-      "MINE:sand_chunk_5",
+      "MINE:sand_chunk_3",
+      "MINE:sand_chunk_4",
       "CRAFT:white_dye_chunk_1"
     ],
     "operation_type": "craft"

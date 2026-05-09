@@ -21,6 +21,8 @@
 - Do not assume anything. Ask questions to clear doubts and ambiguity.
 - Do not implement ant silent fallbacks or supress errors and continue. Everything has to be verified with me first. Implement graceful error degradation and propogation. Do not be afraid to fail.
 - In case for any reason a feature cannot be implemented due to any reason, either clear our understanding or just gracefully fail to do so. do not implement half cooked code.
-- Treat everything as a hard requirement. Do not try to work around by implementing a 'close enough' fix. If it can't be implemented, is contradictory or ambiguous, then raise appropriate question. If there are cases when the code can error out or fail when implementing the request, let it fail. This is the 'all or none' approach.
+- Treat everything as a hard requirement. Do not work around by implementing a 'close enough' fix. If it can't be implemented, is contradictory or ambiguous, then raise appropriate question. If there are cases when the code can error out or fail when implementing the request, let it fail. This is the 'all or none' approach.
 - Must follow all instructions in architecture.md
 - Each time when deciding to implement fallback, instead create a hard fail exception and exit gracefully.
+- create all temporary debug script for any debug/testing inside temp folder. do not run inline bash commands in     
+  shell for future tasks            

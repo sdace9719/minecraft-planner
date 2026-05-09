@@ -393,19 +393,22 @@ class GlobalMathOptimizer:
         search_block: str,
         vreq: int,
         vein_size: int,
+        avg_yield: float = 1.0,
     ) -> float:
-        """Time (seconds) to acquire *qty* ore using tools of *tier*.
+        """Time (seconds) to acquire *qty* ore items using tools of *tier*.
 
-        Includes breaking the ore itself plus the search volume to find veins.
+        *qty* is items needed (e.g. 216 copper ingots → 216 copper_ore items).
+        *avg_yield* converts items to blocks (e.g. copper=3.5 items/block).
+        *vein_size* is ore blocks found per vein.
         """
         if vreq <= 0 or vein_size <= 0:
-            # Surface material — no search cost.
             return self._tblock(ore_block, self._tool_speed(tier)) * qty
 
-        veins = max(1, math.ceil(qty / vein_size))
+        ore_blocks = max(1, math.ceil(qty / avg_yield))
+        veins = max(1, math.ceil(ore_blocks / vein_size))
         search_blocks_total = veins * vreq
 
-        blocks: dict[str, int] = {ore_block: qty, search_block: search_blocks_total}
+        blocks: dict[str, int] = {ore_block: ore_blocks, search_block: search_blocks_total}
         return self._compute_breaking_time(tier, blocks)
 
     def _compute_costboot(
@@ -456,15 +459,19 @@ class GlobalMathOptimizer:
                         vreq = int(ore_entry.get("blocks_to_break", 0))
                         vein = int(ore_entry.get("vein_size", 1))
                         junk = str(ore_entry.get("junk_block", "stone"))
+                        ay = float(ore_entry.get("avg_yield", 1.0))
                     else:
                         vreq, vein, junk = self._search_params(ore_key)
+                        ay = 1.0
                         if vreq == 0:
                             vreq, vein, junk = self._search_params(req_tier)
                     if vreq > 0:
-                        veins = max(1, math.ceil(q / vein))
-                        total_blocks += veins * vreq  # search blocks wear tools too
+                        ore_blocks = max(1, math.ceil(q / ay))
+                        veins_for_search = max(1, math.ceil(ore_blocks / vein))
+                        total_blocks += veins_for_search * vreq
+                        total_blocks += ore_blocks
                         ore_block = self._source_block_for(task.name)
-                        total += self._compute_tacq(from_tier, q, ore_block, junk, vreq, vein)
+                        total += self._compute_tacq(from_tier, q, ore_block, junk, vreq, vein, ay)
                         continue
                 total += self._tblock(block, speed) * q
 
@@ -656,10 +663,10 @@ class GlobalMathOptimizer:
             # Search volume comes from the MATERIAL being mined.
             mat_tier = str(harvest.get("min_tier", "wooden"))
             surface_material = mat_tier in ("wooden", "hand")
+            ay = 1.0
             if surface_material:
                 vreq, vein_size, junk_block = 0, 1, "stone"
             else:
-                # Derive ore key (e.g. "copper_ore" → "copper").
                 ore_key = node.name
                 if ore_key.startswith("deepslate_"):
                     ore_key = ore_key[len("deepslate_"):]
@@ -670,11 +677,12 @@ class GlobalMathOptimizer:
                     vein_size = int(ore_entry.get("vein_size", 1))
                     vreq = int(ore_entry.get("blocks_to_break", 0))
                     junk_block = str(ore_entry.get("junk_block", "stone"))
+                    ay = float(ore_entry.get("avg_yield", 1.0))
                 else:
                     vreq, vein_size, junk_block = self._search_params(ore_key)
                     if vreq == 0:
                         vreq, vein_size, junk_block = self._search_params(mat_tier)
-            tacq = self._compute_tacq(tier, qty, ore_block, junk_block, vreq, vein_size)
+            tacq = self._compute_tacq(tier, qty, ore_block, junk_block, vreq, vein_size, ay)
 
             # Bootstrap from the best tier found so far.
             effective_from = best_tier if best_tier is not None else "hand"

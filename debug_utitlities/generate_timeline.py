@@ -1,47 +1,60 @@
 #!/usr/bin/env python3
-"""Generate an interactive vis.js timeline HTML from the Phase 5 queue."""
+"""Generate an interactive vis.js timeline HTML from the full Phase 6 execution trace.
 
+Includes Phase-6-injected tasks: STASH, GO_TO_CHEST, CRAFT:chest, PLACE_CHEST.
+"""
 from __future__ import annotations
 
-import json
-import math
+import json, math, sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-PHASE5_PATH = ROOT / "tests" / "input_materials_test.phase5.json"
-OUT_DIR = Path(__file__).resolve().parent
+sys.path.insert(0, str(ROOT))
 
-FUEL_YIELD = 1.5
-TOOL_SUFFIXES = ("_pickaxe", "_axe", "_shovel", "_hoe", "_sword")
+OUT_DIR = Path(__file__).resolve().parent
+OUT_PATH = OUT_DIR / "queue_timeline.html"
 
 OP_COLORS = {
-    "gather":  "#4CAF50",  # green
-    "craft":   "#2196F3",  # blue
-    "smelt":   "#FF9800",  # orange
-    "mine":    "#F44336",  # red
-    "sword":   "#9C27B0",  # purple
+    "gather":  "#4CAF50",
+    "craft":   "#2196F3",
+    "smelt":   "#FF9800",
+    "mine":    "#F44336",
+    "sword":   "#9C27B0",
+    "place":   "#4CAF50",
+    "stash":   "#FFD700",
+    "retrieve": "#00BCD4",
 }
 
 HTML_TEMPLATE = """<!DOCTYPE html>
 <html>
 <head>
 <meta charset="utf-8">
-<title>Phase 5 Execution Queue</title>
+<title>Phase 6 Execution Trace — {total} steps</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css" rel="stylesheet">
 <style>
   body {{ margin:0; padding:0; font-family:monospace; background:#1a1a2e; color:#eee; overflow:hidden; }}
-  #header {{ padding:12px 20px; background:#16213e; border-bottom:2px solid #0f3460; }}
+  #header {{ padding:12px 20px; background:#16213e; border-bottom:2px solid #0f3460; display:flex; gap:20px; align-items:center; flex-wrap:wrap; }}
   #header h1 {{ margin:0; font-size:18px; }}
   #header span {{ font-size:12px; color:#888; }}
+  .legend {{ display:flex; gap:8px; flex-wrap:wrap; font-size:11px; }}
+  .legend-item {{ display:flex; align-items:center; gap:4px; }}
+  .legend-swatch {{ width:12px; height:12px; border-radius:2px; flex-shrink:0; }}
   #network {{ width:100vw; height:calc(100vh - 52px); }}
-  .tooltip-content {{ white-space:nowrap; font-size:13px; line-height:1.5; }}
+  .tooltip-content {{ font-size:13px; line-height:1.5; max-width:600px; }}
   .tooltip-content b {{ color:#FFD54F; }}
+  .inv-grid {{ display:grid; grid-template-columns:repeat(9, 1fr); gap:1px; margin-top:4px; font-size:10px; }}
+  .inv-slot {{ padding:2px 4px; background:#1a1a2e; border:1px solid #333; border-radius:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }}
+  .inv-slot.empty {{ color:#444; }}
+  .inv-slot.used {{ color:#8be9fd; }}
 </style>
 </head>
 <body>
 <div id="header">
-  <h1>Phase 5 Execution Queue <span>— {total} tasks, scroll/pinch to zoom, drag to pan, hover for details</span></h1>
+  <h1>Phase 6 Execution Trace <span>— {total} steps, {chests} chests, scroll/pinch to zoom</span></h1>
+  <div class="legend">
+    {legend_html}
+  </div>
 </div>
 <div id="network"></div>
 <script>
@@ -54,7 +67,7 @@ var options = {{
   nodes: {{
     shape: 'box',
     margin: 8,
-    widthConstraint: {{ minimum: 240, maximum: 380 }},
+    widthConstraint: {{ minimum: 260, maximum: 420 }},
     font: {{ size: 13, face: 'monospace', color: '#ddd', multi: true }},
     borderWidth: 2,
     shadow: {{ enabled: true, size: 3 }},
@@ -76,85 +89,156 @@ network.once('stabilized', function() {{ network.fit(); }});
 </html>"""
 
 
-def _chunk_index(task_id: str) -> int:
-    marker = "_chunk_"
-    if marker in task_id:
-        return int(task_id.rsplit(marker, 1)[1])
-    return 1
+def _slot_name(s: dict | None) -> str:
+    if s is None:
+        return "—"
+    dur = f" [{s['durability']}]" if s.get("durability") else ""
+    return f"{s['item']}{dur} ×{s['qty']}"
 
 
-def _is_tool(name: str) -> bool:
-    return name.split("_mvb_")[0].endswith(TOOL_SUFFIXES)
+def _inventory_html(slots: list[dict | None]) -> str:
+    """Build a compact 36-slot inventory grid as HTML."""
+    cells: list[str] = []
+    for i, s in enumerate(slots):
+        if s is None:
+            cells.append(f'<div class="inv-slot empty">{i}</div>')
+        else:
+            dur = f"[{s['durability']}]" if s.get("durability") else ""
+            txt = f"{s['item']}{dur} ×{s['qty']}"
+            cells.append(f'<div class="inv-slot used" title="{txt}">{txt[:14]}</div>')
+    return f'<div class="inv-grid">{"".join(cells)}</div>'
 
 
-def _node_label(task: dict, seq: int) -> str:
-    name = task["name"]
-    qty = task["quantity"]
-    op = task["operation_type"].upper()
-    label = f"[{seq}] {op} {name} ×{qty}"
-    if op == "SMELT":
-        fuel = math.ceil(qty / FUEL_YIELD)
-        label += f"\n  fuel: {fuel} planks"
-    if _is_tool(name):
-        dur = _durability(name)
-        label += f"\n  durability: {dur}"
+def _task_label(snapshot: dict, step: int) -> str:
+    """Build a compact node label for a single snapshot."""
+    tid = snapshot["task_id"]
+    op = snapshot.get("operation_type", "")
+    qty = snapshot.get("quantity", 0)
+    name = snapshot.get("name", "")
+
+    if snapshot.get("stash"):
+        chest = snapshot.get("chest", "?")
+        return f"[{step}] STASH → {chest}\n  (8 slots cleared)"
+    if snapshot.get("retrieve"):
+        item = snapshot.get("item", "?")
+        return f"[{step}] GO TO CHEST\n  retrieve {item}"
+    if tid == "CRAFT:chest_batch":
+        return f"[{step}] CRAFT chest ×{qty}\n  (consumes {qty * 8} oak_planks)"
+    if tid == "PLACE_CHEST:batch":
+        return f"[{step}] PLACE chest ×{qty}\n  (available for stashing)"
+
+    label = f"[{step}] {op.upper()} {name} ×{qty}"
+    if op == "smelt":
+        label += f"\n  fuel: {math.ceil(qty / 1.5)} planks"
     return label
 
 
-def _durability(name: str) -> int:
-    base = name.split("_mvb_")[0]
-    tier = base.split("_")[0]
-    dur_map = {"wooden": 59, "stone": 131, "iron": 250, "diamond": 1561,
-               "golden": 32, "netherite": 2031}
-    return dur_map.get(tier, 59)
+def _task_title(snapshot: dict, step: int) -> str:
+    """Full HTML tooltip for a snapshot."""
+    tid = snapshot["task_id"]
+    qty = snapshot.get("quantity", 0)
+    name = snapshot.get("name", "")
+    op = snapshot.get("operation_type", "")
 
+    lines = [f"<b>#{step}</b> {tid}"]
 
-def _task_title(task: dict, seq: int) -> str:
-    tid = task["id"]
-    name = task["name"]
-    qty = task["quantity"]
-    op = task["operation_type"]
-    deps = ", ".join(task["dependencies"]) if task["dependencies"] else "(none)"
-    lines = [
-        f"<b>#{seq}</b> {tid}",
-        f"Item: {name}",
-        f"Quantity: {qty}",
-        f"Operation: {op}",
-    ]
-    if op == "smelt":
-        lines.append(f"Fuel: {math.ceil(qty / FUEL_YIELD)} planks")
-    if _is_tool(name):
-        lines.append(f"Durability: {_durability(name)}")
-    lines.append(f"Dependencies: {deps}")
+    if snapshot.get("stash"):
+        lines.append(f"Event: STASH → {snapshot.get('chest', '?')}")
+        lines.append("Freed 8+ inventory slots")
+    elif snapshot.get("retrieve"):
+        lines.append("Event: GO_TO_CHEST")
+        lines.append(f"Retrieved item: {snapshot.get('item', '?')}")
+    else:
+        lines.append(f"Item: {name}")
+        lines.append(f"Quantity: {qty}")
+        lines.append(f"Operation: {op}")
+        if op == "smelt":
+            lines.append(f"Fuel: {math.ceil(qty / 1.5)} planks")
+
+    lines.append("")
+    lines.append("<b>Inventory (36 slots):</b>")
+    lines.append(_inventory_html(snapshot.get("slots", [])))
     return "<br>".join(lines)
 
 
-def generate_timeline(tasks: list[dict]) -> str:
-    nodes_json = []
-    edges_json = []
-    id_to_node: dict[str, int] = {}
+def _color_for(snapshot: dict) -> str:
+    if snapshot.get("stash"):
+        return OP_COLORS["stash"]
+    if snapshot.get("retrieve"):
+        return OP_COLORS["retrieve"]
+    return OP_COLORS.get(snapshot.get("operation_type", ""), "#888")
 
-    for i, task in enumerate(tasks):
+
+def _legend_html() -> str:
+    items = [
+        ("#4CAF50", "gather"),
+        ("#2196F3", "craft"),
+        ("#FF9800", "smelt"),
+        ("#F44336", "mine"),
+        ("#9C27B0", "sword"),
+        ("#4CAF50", "place"),
+        ("#FFD700", "STASH"),
+        ("#00BCD4", "GO_TO_CHEST"),
+    ]
+    parts = []
+    for color, label in items:
+        parts.append(
+            f'<div class="legend-item">'
+            f'<div class="legend-swatch" style="background:{color}"></div>{label}'
+            f'</div>'
+        )
+    return "\n    ".join(parts)
+
+
+def _enrich_snapshot(snap: dict, task_by_id: dict[str, dict]) -> dict:
+    """Merge base task data (name, quantity, operation_type) into a snapshot."""
+    tid = snap.get("task_id", "")
+    base = task_by_id.get(tid)
+    if base is not None:
+        return {**base, **snap}
+    # Injected Phase 6 tasks: carry their own data or infer it.
+    if snap.get("stash"):
+        snap["operation_type"] = "stash"
+    elif snap.get("retrieve"):
+        snap["operation_type"] = "retrieve"
+    elif tid == "CRAFT:chest_batch":
+        snap["operation_type"] = "craft"
+        snap["name"] = "chest"
+        snap.setdefault("quantity", 0)
+    elif tid == "PLACE_CHEST:batch":
+        snap["operation_type"] = "place"
+        snap["name"] = "chest"
+        snap.setdefault("quantity", 0)
+    return snap
+
+
+def generate_timeline(snapshots: list[dict], task_by_id: dict[str, dict], chests: int) -> str:
+    nodes_json: list[dict] = []
+    edges_json: list[dict] = []
+
+    for i, raw_snap in enumerate(snapshots):
+        snap = _enrich_snapshot(raw_snap, task_by_id)
         nid = i + 1
-        tid = task["id"]
-        id_to_node[tid] = nid
-        color = OP_COLORS.get(task["operation_type"], "#888")
-        label = _node_label(task, nid)
-        title = _task_title(task, nid)
+        color = _color_for(snap)
+        label = _task_label(snap, i + 1)
+        title = _task_title(snap, i + 1)
 
-        # Manual positioning: vertical queue, fixed x=0, y increases downward
         nodes_json.append({
             "id": nid,
             "label": label,
             "title": f'<div class="tooltip-content">{title}</div>',
-            "color": {"background": "#16213e", "border": color, "highlight": {"border": "#FFD54F"}},
+            "color": {
+                "background": "#16213e",
+                "border": color,
+                "highlight": {"border": "#FFD54F"},
+            },
             "x": 0,
             "y": i * 80,
             "fixed": {"x": True, "y": True},
         })
 
-    # Linear chain edges (execution order)
-    for i in range(len(tasks) - 1):
+    # Linear execution chain edges
+    for i in range(len(snapshots) - 1):
         edges_json.append({
             "from": i + 1,
             "to": i + 2,
@@ -163,40 +247,44 @@ def generate_timeline(tasks: list[dict]) -> str:
             "width": 0.5,
         })
 
-    # Dependency edges (producer → consumer, solid)
-    for i, task in enumerate(tasks):
-        consumer_id = i + 1
-        for dep_id in task["dependencies"]:
-            producer_id = id_to_node.get(dep_id)
-            if producer_id is not None:
-                edges_json.append({
-                    "from": producer_id,
-                    "to": consumer_id,
-                    "color": {"color": "#555", "highlight": "#FFD54F", "opacity": 0.4},
-                    "width": 1,
-                })
-
     return HTML_TEMPLATE.format(
-        total=len(tasks),
+        total=len(snapshots),
+        chests=chests,
+        legend_html=_legend_html(),
         nodes_json=json.dumps(nodes_json),
         edges_json=json.dumps(edges_json),
     )
 
 
 def main() -> None:
-    if not PHASE5_PATH.exists():
-        print(f"ERROR: Phase 5 file not found at {PHASE5_PATH}")
+    # 1. Phase 4B
+    from planner.dag_router import DagRouter
+    router = DagRouter()
+    phase4_tasks = router.route_from_file()
+    print(f"Phase 4B: {len(phase4_tasks)} tasks")
+
+    # 2. Phase 5
+    from planner.global_optimizer import topological_sort_phase4
+    phase5_tasks = topological_sort_phase4(phase4_tasks)
+    phase5_path = ROOT / "tests" / "input_materials_test.phase5.json"
+    phase5_path.write_text(json.dumps(phase5_tasks, indent=2) + "\n")
+    print(f"Phase 5: {len(phase5_tasks)} tasks")
+
+    # 3. Phase 6 — full simulation with chest overhead
+    from planner.final_checker import CacheSimulator
+    sim = CacheSimulator()
+    result = sim.simulate_with_chest_overhead()
+    print(f"Phase 6: success={result.success}, chests={sim._chest_counter}, "
+          f"snapshots={len(result.inventory_snapshots)}")
+    if result.error:
+        print(f"  error: {result.error}")
         return
 
-    with open(PHASE5_PATH, encoding="utf-8") as f:
-        tasks = json.load(f)
-
-    print(f"Loaded {len(tasks)} tasks from {PHASE5_PATH}")
-
-    html = generate_timeline(tasks)
-    out_path = OUT_DIR / "queue_timeline.html"
-    out_path.write_text(html, encoding="utf-8")
-    print(f"Wrote timeline → {out_path}")
+    # 4. Build task lookup map and generate HTML
+    task_by_id = {t["id"]: t for t in phase5_tasks}
+    html = generate_timeline(result.inventory_snapshots, task_by_id, sim._chest_counter)
+    OUT_PATH.write_text(html, encoding="utf-8")
+    print(f"Wrote timeline → {OUT_PATH}")
 
 
 if __name__ == "__main__":

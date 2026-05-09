@@ -393,6 +393,7 @@ class DagRouter:
                         ledger[shard_id] = consume
                         new_deps.append(shard_id)
                         chunk.quantity -= consume
+                        ledger[chunk_id] = chunk.quantity
                         demand = chunk.quantity  # remaining demand for original chunk
                         remaining = demand
                         ledger[producer_chunk_id] = available - consume
