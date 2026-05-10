@@ -251,10 +251,41 @@ class CacheSimulator:
                 usage.setdefault(tool, i)
         return usage
 
+    def _toss(self, inv: Inventory, tasks: list[dict], task_idx: int) -> list[dict]:
+        """Toss items with zero future demand across all remaining tasks.
+
+        Returns list of toss snapshot dicts, each with ``toss`` marker.
+        """
+        toss_snapshots: list[dict] = []
+        for i, s in enumerate(inv.slots):
+            if s is None:
+                continue
+            item = s["item"]
+            if _is_tool(item):
+                continue
+            needed = False
+            for j in range(task_idx, len(tasks)):
+                if self._task_needs_item(tasks[j], item):
+                    needed = True
+                    break
+            if not needed:
+                qty = s["qty"]
+                inv.clear_slot(i)
+                toss_snapshots.append({
+                    "task_index": task_idx,
+                    "task_id": f"TOSS:{item}",
+                    "slots": inv.slots_snapshot(),
+                    "toss": True,
+                    "item": item,
+                    "quantity": qty,
+                })
+        return toss_snapshots
+
     def _stash(self, inv: Inventory, tasks: list[dict], task_idx: int) -> str | None:
         """Clear 8+ slots by stashing items with farthest next use.
 
-        Priority = next task index where the item is needed (∞ if never).
+        Items with zero future demand are handled by ``_toss()`` first.
+        Only items with actual future demand reach this method.
         Higher priority = needed later → stashed first.
         Returns chest_id, or None if nothing was stashed.
         """
@@ -283,7 +314,7 @@ class CacheSimulator:
         for window in (50, 45, 40, 35, 30, 25, 20, 15, 10, 5):
             min_window = task_idx + window
             candidates = [(p, i, it) for p, i, it in slot_priority
-                          if p == 2**60 or p > min_window]
+                          if p != 2**60 and p > min_window]
             to_take = min(len(candidates), 8)
             if to_take >= 8 or window == 5:
                 stashed = candidates[:to_take]
@@ -441,18 +472,23 @@ class CacheSimulator:
         for idx, task in enumerate(tasks):
             op = task["operation_type"]
 
-            # --- Stash check (before consuming, so earlier stashes are in chests) ---
+            # --- Toss + Stash check (before consuming) ---
             if inv.used_slots >= self.stash_threshold:
-                chest_id = self._stash(inv, tasks, idx + 1)
-                if chest_id:
-                    stash_tasks.append(chest_id)
-                    snapshots.append({
-                        "task_index": idx,
-                        "task_id": f"STASH:{chest_id}",
-                        "slots": inv.slots_snapshot(),
-                        "stash": True,
-                        "chest": chest_id,
-                    })
+                # Step 1: toss items with zero future demand (incl. current task)
+                toss_snaps = self._toss(inv, tasks, idx)
+                snapshots.extend(toss_snaps)
+                # Step 2: stash items needed later but not imminently
+                if inv.used_slots >= self.stash_threshold:
+                    chest_id = self._stash(inv, tasks, idx + 1)
+                    if chest_id:
+                        stash_tasks.append(chest_id)
+                        snapshots.append({
+                            "task_index": idx,
+                            "task_id": f"STASH:{chest_id}",
+                            "slots": inv.slots_snapshot(),
+                            "stash": True,
+                            "chest": chest_id,
+                        })
 
             # --- Consume inputs ---
             # Ingredients are consumed once per task (blueprint quantity),
@@ -551,11 +587,98 @@ class CacheSimulator:
         except Exception:
             return 1
 
+    def _find_craft_recipe(self, item_name: str) -> dict | None:
+        """Return the *craft* blueprint entry for *item_name*, or None."""
+        for bp in self.blueprints.get(item_name, []):
+            if bp.get("operation") == "craft":
+                return bp
+        return None
+
+    def _propagate_ingredient_delta(self, tasks: list[dict], item_name: str,
+                                    delta_qty: int, visited: set[str]) -> None:
+        """Add *delta_qty* of *item_name* to the last matching task, then recurse
+        into its recipe ingredients.  Modifies *tasks* in place."""
+        if delta_qty <= 0 or item_name in visited:
+            return
+        visited.add(item_name)
+
+        bp = self._find_craft_recipe(item_name)
+        if bp is None:
+            # Base / gathered item — add to the last mine or gather task.
+            for t in reversed(tasks):
+                if (t["name"] == item_name
+                        and t["operation_type"] in ("mine", "gather")
+                        and "mvb" not in t.get("id", "")
+                        and "island" not in t.get("id", "")):
+                    t["quantity"] += delta_qty
+                    return
+            raise SimulationError(
+                f"Cannot propagate {delta_qty} {item_name!r}: "
+                f"no upstream mine/gather task found."
+            )
+
+        recipe_yield = self._recipe_yield(item_name)
+        ingredients = bp.get("ingredients", {})
+
+        runs = math.ceil(delta_qty / recipe_yield)
+        craft_add = runs * recipe_yield
+
+        for t in reversed(tasks):
+            if (t["name"] == item_name
+                    and t["operation_type"] == "craft"
+                    and "mvb" not in t.get("id", "")
+                    and "island" not in t.get("id", "")):
+                t["quantity"] += craft_add
+                break
+        else:
+            raise SimulationError(
+                f"Cannot propagate {delta_qty} {item_name!r}: "
+                f"no craft task found."
+            )
+
+        for ing_name, ing_count in ingredients.items():
+            self._propagate_ingredient_delta(
+                tasks, ing_name, runs * ing_count, visited.copy())
+
+    def _ensure_tool_capacity(self, tasks: list[dict]) -> None:
+        """Detect over-consumed tool chunks after chest-overhead log bump and
+        propagate additional tool copies plus their ingredient deltas upstream.
+
+        Raises SimulationError if propagation hits an unresolvable gap.
+        """
+        # Group mine/gather tasks by their tool dependency chunk id.
+        tool_load: dict[str, int] = {}       # dep_id → total workload
+        tool_name_of: dict[str, str] = {}    # dep_id → tool base name
+        for t in tasks:
+            if t["operation_type"] not in ("mine", "gather"):
+                continue
+            for d in t.get("dependencies", []):
+                dep_name = self._dep_item_name(d)
+                if _is_tool(dep_name):
+                    tool_load[d] = tool_load.get(d, 0) + t["quantity"]
+                    tool_name_of[d] = dep_name
+
+        extra: dict[str, int] = {}  # tool_base_name → extra copies needed
+        for dep_id, workload in tool_load.items():
+            tool_name = tool_name_of[dep_id]
+            dur = _tool_durability(tool_name)
+            needed = math.ceil(workload / dur)
+            if needed > 1:
+                extra[tool_name] = extra.get(tool_name, 0) + (needed - 1)
+
+        for tool_name, copies in extra.items():
+            for _ in range(copies):
+                self._propagate_ingredient_delta(
+                    tasks, tool_name, 1, visited=set())
+
     def _apply_chest_overhead(self, tasks: list[dict], chest_count: int) -> list[dict]:
         """Add plank and log overhead for *chest_count* chests (modifies tasks in place).
 
         Overhead is routed to the *last* non-MVB tasks so the axe with remaining
         durability is used.  Each chest = 8 planks; planks yield 4 per log.
+
+        After adding logs, verifies axe durability capacity and propagates
+        additional tool copies + upstream ingredients if needed.
         """
         if chest_count <= 0:
             return tasks
@@ -582,6 +705,7 @@ class CacheSimulator:
         if last_mine is not None:
             last_mine["quantity"] += chest_logs
 
+        self._ensure_tool_capacity(tasks)
         return tasks
 
     def _ensure_chest_tasks(self, tasks: list[dict], total_chests: int) -> list[dict]:

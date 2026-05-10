@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Generate an interactive vis.js timeline HTML from the full Phase 6 execution trace.
 
-Includes Phase-6-injected tasks: STASH, GO_TO_CHEST, CRAFT:chest, PLACE_CHEST.
+Includes Phase-6-injected tasks: TOSS, STASH, GO_TO_CHEST, CRAFT:chest, PLACE_CHEST.
 """
 from __future__ import annotations
 
@@ -15,14 +15,15 @@ OUT_DIR = Path(__file__).resolve().parent
 OUT_PATH = OUT_DIR / "queue_timeline.html"
 
 OP_COLORS = {
-    "gather":  "#4CAF50",
-    "craft":   "#2196F3",
-    "smelt":   "#FF9800",
-    "mine":    "#F44336",
-    "sword":   "#9C27B0",
-    "place":   "#4CAF50",
-    "stash":   "#FFD700",
+    "gather":   "#4CAF50",
+    "craft":    "#2196F3",
+    "smelt":    "#FF9800",
+    "mine":     "#F44336",
+    "sword":    "#9C27B0",
+    "place":    "#4CAF50",
+    "stash":    "#FFD700",
     "retrieve": "#00BCD4",
+    "toss":     "#795548",
 }
 
 HTML_TEMPLATE = """<!DOCTYPE html>
@@ -116,6 +117,10 @@ def _task_label(snapshot: dict, step: int) -> str:
     qty = snapshot.get("quantity", 0)
     name = snapshot.get("name", "")
 
+    if snapshot.get("toss"):
+        item = snapshot.get("item", "?")
+        qty_tossed = snapshot.get("quantity", 0)
+        return f"[{step}] TOSS {item}\n  qty: {qty_tossed} (discarded)"
     if snapshot.get("stash"):
         chest = snapshot.get("chest", "?")
         return f"[{step}] STASH → {chest}\n  (8 slots cleared)"
@@ -142,7 +147,12 @@ def _task_title(snapshot: dict, step: int) -> str:
 
     lines = [f"<b>#{step}</b> {tid}"]
 
-    if snapshot.get("stash"):
+    if snapshot.get("toss"):
+        lines.append(f"Event: TOSS (discard)")
+        lines.append(f"Item: {snapshot.get('item', '?')}")
+        lines.append(f"Quantity discarded: {snapshot.get('quantity', 0)}")
+        lines.append("Reason: zero future demand")
+    elif snapshot.get("stash"):
         lines.append(f"Event: STASH → {snapshot.get('chest', '?')}")
         lines.append("Freed 8+ inventory slots")
     elif snapshot.get("retrieve"):
@@ -162,6 +172,8 @@ def _task_title(snapshot: dict, step: int) -> str:
 
 
 def _color_for(snapshot: dict) -> str:
+    if snapshot.get("toss"):
+        return OP_COLORS["toss"]
     if snapshot.get("stash"):
         return OP_COLORS["stash"]
     if snapshot.get("retrieve"):
@@ -179,6 +191,7 @@ def _legend_html() -> str:
         ("#4CAF50", "place"),
         ("#FFD700", "STASH"),
         ("#00BCD4", "GO_TO_CHEST"),
+        ("#795548", "TOSS"),
     ]
     parts = []
     for color, label in items:
@@ -197,7 +210,11 @@ def _enrich_snapshot(snap: dict, task_by_id: dict[str, dict]) -> dict:
     if base is not None:
         return {**base, **snap}
     # Injected Phase 6 tasks: carry their own data or infer it.
-    if snap.get("stash"):
+    if snap.get("toss"):
+        snap["operation_type"] = "toss"
+        snap["name"] = snap.get("item", "unknown")
+        snap.setdefault("quantity", 0)
+    elif snap.get("stash"):
         snap["operation_type"] = "stash"
     elif snap.get("retrieve"):
         snap["operation_type"] = "retrieve"
