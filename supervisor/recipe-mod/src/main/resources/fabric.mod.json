@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "id": "recipecraft",
+  "version": "${version}",
+  "name": "RecipeCraft",
+  "description": "On-demand crafting via chat commands — type !stick 16 to craft",
+  "authors": ["sdace9719"],
+  "license": "MIT",
+  "environment": "client",
+  "entrypoints": {
+    "client": ["com.recipecraft.RecipeCraftMod"]
+  },
+  "depends": {
+    "fabricloader": ">=0.16.0",
+    "minecraft": "~1.21.11",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}

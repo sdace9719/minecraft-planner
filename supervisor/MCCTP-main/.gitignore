@@ -1,0 +1,32 @@
+# Gradle
+.gradle/
+build/
+gradle/wrapper/gradle-wrapper.jar
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.launch
+.settings/
+.classpath
+.project
+bin/
+
+# Fabric
+run/
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Python
+python/__pycache__/
+python/src/*.egg-info/
+python/.venv/
+python/venv/
+*.pyc
+
+# Claude
+.claude/

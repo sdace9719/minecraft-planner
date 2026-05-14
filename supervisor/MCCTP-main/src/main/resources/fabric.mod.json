@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "mcctp",
+  "version": "${version}",
+  "name": "MCCTP",
+  "description": "Minecraft Control Transfer Protocol - Control Minecraft via WebSocket",
+  "authors": ["Forkei"],
+  "contact": {},
+  "license": "MIT",
+  "icon": "assets/mcctp/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["com.mcctp.MCCTPMod"],
+    "client": ["com.mcctp.MCCTPClient"]
+  },
+  "mixins": [
+    "mcctp.mixins.json",
+    {
+      "config": "mcctp.client.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
+    "fabricloader": ">=0.16.0",
+    "minecraft": "~1.21.11",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}

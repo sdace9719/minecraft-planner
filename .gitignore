@@ -16,3 +16,10 @@ package*.json
 uv.lock
 temp_scripts/
 temp/
+pytest*/
+.gemini/
+.claude/
+.python*
+portablemc*
+*.zip
+supervisor/*/debug/
