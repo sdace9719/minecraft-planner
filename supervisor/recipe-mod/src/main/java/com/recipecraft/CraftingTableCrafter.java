@@ -10,6 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.c2s.play.ClickSlotC2SPacket;
 import net.minecraft.network.packet.c2s.play.CraftRequestC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
+import net.minecraft.network.packet.c2s.play.UpdateSelectedSlotC2SPacket;
 import net.minecraft.recipe.NetworkRecipeId;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.screen.sync.ItemStackHash;
@@ -194,7 +195,8 @@ public class CraftingTableCrafter {
     private void stateCheck(MinecraftClient client) {
         ClientPlayerEntity player = client.player;
 
-        LOG.info("CHECK: starting table craft, tableSlot={}", tableSlot);
+        LOG.info("CHECK: releasing all keys, tableSlot={}", tableSlot);
+        releaseAllKeys(client);
 
         // Find axe in hotbar (optional)
         axeSlot = -1;
@@ -209,48 +211,50 @@ public class CraftingTableCrafter {
             LOG.info("CHECK: no axe in hotbar, will break with hand");
         }
 
-        // Find placement position
+        // Expanded search: Y offsets [-1,0,1], radius [-2..2], skip own pos
         BlockPos playerPos = player.getBlockPos();
-        BlockPos[] candidates = {
-            playerPos.add(1, 0, 0), playerPos.add(-1, 0, 0),
-            playerPos.add(0, 0, 1), playerPos.add(0, 0, -1),
-            playerPos.add(1, 0, 1), playerPos.add(-1, 0, -1),
-            playerPos.add(1, 0, -1), playerPos.add(-1, 0, 1),
-        };
+        for (int yOff = -1; yOff <= 1; yOff++) {
+            for (int xOff = -2; xOff <= 2; xOff++) {
+                for (int zOff = -2; zOff <= 2; zOff++) {
+                    if (xOff == 0 && zOff == 0 && yOff == 0) continue;
 
-        for (BlockPos target : candidates) {
-            BlockPos ground = target.down();
-            BlockState groundState = client.world.getBlockState(ground);
-            BlockState targetState = client.world.getBlockState(target);
-            boolean blocked = isOccupied(player, target);
+                    BlockPos target = playerPos.add(xOff, yOff, zOff);
+                    BlockPos ground = target.down();
+                    BlockState groundState = client.world.getBlockState(ground);
+                    BlockState targetState = client.world.getBlockState(target);
+                    boolean blocked = isOccupied(player, target);
+                    double dist = Math.sqrt(xOff*xOff + yOff*yOff + zOff*zOff);
 
-            LOG.info("CHECK: candidate {} groundSolid={} air={} blocked={}",
-                target, groundState.isSolid(), targetState.isAir(), blocked);
-
-            if (groundState.isSolid() && targetState.isAir() && !blocked) {
-                tablePos = target;
-                placeGround = ground;
-                LOG.info("CHECK: selected tablePos={} ground={}", tablePos, placeGround);
-                advance(State.SWITCH_TABLE);
-                return;
+                    if (groundState.isSolid() && targetState.isAir() && !blocked && dist <= 3.5) {
+                        tablePos = target;
+                        placeGround = ground;
+                        LOG.info("CHECK: selected tablePos={} ground={} offset=({},{},{})",
+                            tablePos, placeGround, xOff, yOff, zOff);
+                        advance(State.SWITCH_TABLE);
+                        return;
+                    }
+                }
             }
         }
 
+        LOG.error("CHECK: no valid placement found within 3-block radius");
         fail(client, "No suitable location to place crafting table.");
     }
 
     // ── SWITCH_TABLE ──
 
     private void stateSwitchTable(MinecraftClient client) {
-        LOG.info("SWITCH_TABLE: pressing hotbar key {}", tableSlot);
-        client.options.hotbarKeys[tableSlot].setPressed(true);
+        LOG.info("SWITCH_TABLE: sending UpdateSelectedSlotC2SPacket slot={}", tableSlot);
+        client.getNetworkHandler().sendPacket(new UpdateSelectedSlotC2SPacket(tableSlot));
         advance(State.WAIT_SWITCH);
     }
 
     private void stateWaitSwitch(MinecraftClient client) {
-        client.options.hotbarKeys[tableSlot].setPressed(false);
-        LOG.info("WAIT_SWITCH: released hotbar key {}", tableSlot);
-        advance(State.LOOK_PLACE);
+        waitTicks++;
+        if (waitTicks >= 2) {
+            LOG.info("WAIT_SWITCH: slot change should be processed");
+            advance(State.LOOK_PLACE);
+        }
     }
 
     // ── LOOK_PLACE ──
@@ -364,8 +368,8 @@ public class CraftingTableCrafter {
 
     private void stateSwitchAxe(MinecraftClient client) {
         if (axeSlot >= 0) {
-            LOG.info("SWITCH_AXE: pressing hotbar key {}", axeSlot);
-            client.options.hotbarKeys[axeSlot].setPressed(true);
+            LOG.info("SWITCH_AXE: sending UpdateSelectedSlotC2SPacket slot={}", axeSlot);
+            client.getNetworkHandler().sendPacket(new UpdateSelectedSlotC2SPacket(axeSlot));
             advance(State.WAIT_AXE);
         } else {
             LOG.info("SWITCH_AXE: no axe, skipping");
@@ -374,9 +378,11 @@ public class CraftingTableCrafter {
     }
 
     private void stateWaitAxe(MinecraftClient client) {
-        client.options.hotbarKeys[axeSlot].setPressed(false);
-        LOG.info("WAIT_AXE: released hotbar key {}", axeSlot);
-        advance(State.LOOK_BREAK);
+        waitTicks++;
+        if (waitTicks >= 2) {
+            LOG.info("WAIT_AXE: slot change should be processed");
+            advance(State.LOOK_BREAK);
+        }
     }
 
     // ── LOOK_BREAK / WAIT_BREAK ──
