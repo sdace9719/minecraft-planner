@@ -1,0 +1,1 @@
+uv run portablemc start fabric:1.21.11 --jvm-args="-Xmx6G -Xms6G --server 127.0.0.1 --server-port 25565" -u  AI

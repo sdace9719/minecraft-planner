@@ -7,6 +7,7 @@
   "authors": ["sdace9719"],
   "license": "MIT",
   "environment": "client",
+  "accessWidener": "recipecraft.accesswidener",
   "entrypoints": {
     "client": ["com.recipecraft.RecipeCraftMod"]
   },

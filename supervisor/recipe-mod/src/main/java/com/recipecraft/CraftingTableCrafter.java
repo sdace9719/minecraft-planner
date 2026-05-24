@@ -244,8 +244,8 @@ public class CraftingTableCrafter {
     // ── SWITCH_TABLE ──
 
     private void stateSwitchTable(MinecraftClient client) {
-        LOG.info("SWITCH_TABLE: sending UpdateSelectedSlotC2SPacket slot={}", tableSlot);
-        client.getNetworkHandler().sendPacket(new UpdateSelectedSlotC2SPacket(tableSlot));
+        LOG.info("SWITCH_TABLE: setting client selectedSlot={}", tableSlot);
+        client.player.getInventory().selectedSlot = tableSlot;
         advance(State.WAIT_SWITCH);
     }
 
@@ -368,8 +368,8 @@ public class CraftingTableCrafter {
 
     private void stateSwitchAxe(MinecraftClient client) {
         if (axeSlot >= 0) {
-            LOG.info("SWITCH_AXE: sending UpdateSelectedSlotC2SPacket slot={}", axeSlot);
-            client.getNetworkHandler().sendPacket(new UpdateSelectedSlotC2SPacket(axeSlot));
+            LOG.info("SWITCH_AXE: setting client selectedSlot={}", axeSlot);
+            client.player.getInventory().selectedSlot = axeSlot;
             advance(State.WAIT_AXE);
         } else {
             LOG.info("SWITCH_AXE: no axe, skipping");

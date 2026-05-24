@@ -38,12 +38,17 @@ public class RecipeCrafter {
     private static NetworkRecipeId currentRecipeId;
     private static int totalRequested;
     private static final CraftingTableCrafter tableCrafter = new CraftingTableCrafter();
+    private static final FurnaceSmelter furnaceSmelter = new FurnaceSmelter();
 
     public static void register() {
         ClientTickEvents.END_CLIENT_TICK.register(RecipeCrafter::onClientTick);
     }
 
     private static void onClientTick(MinecraftClient client) {
+        if (furnaceSmelter.isActive()) {
+            furnaceSmelter.onTick(client);
+            return;
+        }
         if (tableCrafter.isActive()) {
             tableCrafter.onTick(client);
             return;
@@ -162,6 +167,174 @@ public class RecipeCrafter {
         totalRequested = count;
         batchesRemaining = batches;
         needsPickup = false;
+    }
+
+    // ── Smelt entry point ──
+
+    // Burn time in ticks for common fuel items (standard smelting takes 200 ticks)
+    private static final Map<Item, Integer> FUEL_BURN_TIMES = buildFuelMap();
+
+    private static Map<Item, Integer> buildFuelMap() {
+        Map<Item, Integer> map = new HashMap<>();
+        map.put(Items.COAL, 1600);              // 8 items
+        map.put(Items.CHARCOAL, 1600);          // 8 items
+        map.put(Items.COAL_BLOCK, 16000);        // 80 items
+        map.put(Items.LAVA_BUCKET, 20000);       // 100 items
+        map.put(Items.BLAZE_ROD, 2400);         // 12 items
+        map.put(Items.DRIED_KELP_BLOCK, 4000);   // 20 items
+        // Wooden items: 300 ticks = 1.5 items
+        map.put(Items.OAK_PLANKS, 300);
+        map.put(Items.SPRUCE_PLANKS, 300);
+        map.put(Items.BIRCH_PLANKS, 300);
+        map.put(Items.JUNGLE_PLANKS, 300);
+        map.put(Items.ACACIA_PLANKS, 300);
+        map.put(Items.DARK_OAK_PLANKS, 300);
+        map.put(Items.CHERRY_PLANKS, 300);
+        map.put(Items.MANGROVE_PLANKS, 300);
+        map.put(Items.BAMBOO_PLANKS, 300);
+        map.put(Items.CRIMSON_PLANKS, 300);
+        map.put(Items.WARPED_PLANKS, 300);
+        map.put(Items.OAK_LOG, 300);
+        map.put(Items.SPRUCE_LOG, 300);
+        map.put(Items.BIRCH_LOG, 300);
+        map.put(Items.JUNGLE_LOG, 300);
+        map.put(Items.ACACIA_LOG, 300);
+        map.put(Items.DARK_OAK_LOG, 300);
+        map.put(Items.CHERRY_LOG, 300);
+        map.put(Items.MANGROVE_LOG, 300);
+        map.put(Items.BAMBOO_BLOCK, 300);
+        map.put(Items.CRIMSON_STEM, 300);
+        map.put(Items.WARPED_STEM, 300);
+        map.put(Items.STICK, 100);              // 0.5 items
+        map.put(Items.BAMBOO, 50);              // 0.25 items
+        map.put(Items.WOODEN_PICKAXE, 200);     // 1 item
+        map.put(Items.WOODEN_AXE, 200);
+        map.put(Items.WOODEN_SHOVEL, 200);
+        map.put(Items.WOODEN_HOE, 200);
+        map.put(Items.WOODEN_SWORD, 200);
+        return map;
+    }
+
+    private static int getFuelBurnTicks(Item item) {
+        Integer ticks = FUEL_BURN_TIMES.get(item);
+        if (ticks != null) return ticks;
+        return 0; // not a known fuel
+    }
+
+    private static final List<Item> ALL_PLANKS = List.of(
+        Items.OAK_PLANKS, Items.SPRUCE_PLANKS, Items.BIRCH_PLANKS, Items.JUNGLE_PLANKS,
+        Items.ACACIA_PLANKS, Items.DARK_OAK_PLANKS, Items.CHERRY_PLANKS,
+        Items.MANGROVE_PLANKS, Items.BAMBOO_PLANKS, Items.CRIMSON_PLANKS, Items.WARPED_PLANKS);
+
+    private static boolean isPlank(Item item) {
+        return ALL_PLANKS.contains(item);
+    }
+
+    private static Item findPlankWithQty(ClientPlayerEntity player, int needed) {
+        for (Item plank : ALL_PLANKS) {
+            int count = 0;
+            for (int i = 0; i < player.getInventory().size(); i++) {
+                ItemStack stack = player.getInventory().getStack(i);
+                if (stack.isOf(plank)) count += stack.getCount();
+            }
+            if (count >= needed) return plank;
+        }
+        return null; // no single plank type has enough
+    }
+
+    private static int calcFuelQty(int smeltQty, Item fuelItem) {
+        int burnTicks = getFuelBurnTicks(fuelItem);
+        if (burnTicks <= 0) return -1; // signal: not a fuel
+        int fuelQty = (int) Math.ceil((double) smeltQty * 200.0 / (double) burnTicks);
+        if (fuelQty > 64) fuelQty = 64;
+        return fuelQty;
+    }
+
+    public static void smelt(MinecraftClient client, String itemName, int smeltQty, String fuelName) {
+        LOG.info("smelt: item='{}' smeltQty={} fuel='{}'", itemName, smeltQty, fuelName);
+        if (!validateClientState(client)) {
+            LOG.error("smelt: invalid client state");
+            return;
+        }
+
+        ClientPlayerEntity player = client.player;
+
+        // Look up smeltable item
+        Item smeltItem = lookupItem(itemName);
+        if (smeltItem == null) return;
+
+        // Look up fuel item. If default "oak_planks", find any plank type with enough qty.
+        Item fuelItem = lookupItem(fuelName);
+        if (fuelItem == null) {
+            sendError(client, "Unknown fuel item: '" + fuelName + "'.");
+            return;
+        }
+
+        // Calculate fuel quantity based on burn time
+        int fuelQty = calcFuelQty(smeltQty, fuelItem);
+        if (fuelQty <= 0) {
+            sendError(client, "'" + fuelItem.getName().getString()
+                + "' is not a known fuel. Use coal, planks, logs, etc.");
+            return;
+        }
+        LOG.info("smelt: fuelQty={} (burnTicks={})", fuelQty, getFuelBurnTicks(fuelItem));
+
+        // If fuel is a plank type, find the best plank that has enough qty
+        if (isPlank(fuelItem)) {
+            Item bestPlank = findPlankWithQty(player, fuelQty);
+            if (bestPlank != null) {
+                fuelItem = bestPlank;
+            }
+        }
+
+        // Find furnace in hotbar
+        int furnaceSlot = -1;
+        for (int i = 0; i < 9; i++) {
+            if (player.getInventory().getStack(i).isOf(Items.FURNACE)) {
+                furnaceSlot = i;
+                break;
+            }
+        }
+        if (furnaceSlot < 0) {
+            for (int i = 9; i < player.getInventory().size(); i++) {
+                if (player.getInventory().getStack(i).isOf(Items.FURNACE)) {
+                    sendError(client, "Furnace must be in the hotbar.");
+                    return;
+                }
+            }
+            sendError(client, "No furnace in inventory.");
+            return;
+        }
+        LOG.info("smelt: furnace at hotbar[{}]", furnaceSlot);
+
+        // Verify sufficient smeltable items
+        int haveSmelt = 0;
+        for (int i = 0; i < player.getInventory().size(); i++) {
+            if (player.getInventory().getStack(i).isOf(smeltItem)) {
+                haveSmelt += player.getInventory().getStack(i).getCount();
+            }
+        }
+        if (haveSmelt < smeltQty) {
+            sendError(client, "Not enough " + smeltItem.getName().getString()
+                + ". Need " + smeltQty + ", have " + haveSmelt + ".");
+            return;
+        }
+
+        // Verify sufficient fuel
+        int haveFuel = 0;
+        for (int i = 0; i < player.getInventory().size(); i++) {
+            if (player.getInventory().getStack(i).isOf(fuelItem)) {
+                haveFuel += player.getInventory().getStack(i).getCount();
+            }
+        }
+        if (haveFuel < fuelQty) {
+            sendError(client, "Not enough fuel (" + fuelItem.getName().getString()
+                + "). Need " + fuelQty + ", have " + haveFuel + ".");
+            return;
+        }
+
+        LOG.info("smelt: all checks passed, starting FurnaceSmelter");
+        furnaceSmelter.start(client, smeltItem, smeltQty, fuelItem, fuelQty, furnaceSlot);
     }
 
     // ── Validation ──
