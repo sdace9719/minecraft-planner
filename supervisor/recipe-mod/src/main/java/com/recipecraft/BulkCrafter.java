@@ -61,6 +61,7 @@ public class BulkCrafter {
                        List<NetworkRecipeId> recipeIds, List<Integer> batchCounts,
                        int tableSlot, BulkCraftListener listener) {
         LOG.info("=== BULK CRAFT: {} items, tableSlot={} ===", requests.size(), tableSlot);
+        lastPositions.clear();
         this.requests = requests;
         this.recipeIds = recipeIds;
         this.batchCounts = batchCounts;

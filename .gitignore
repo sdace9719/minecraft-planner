@@ -24,3 +24,4 @@ portablemc*
 *.zip
 supervisor/*/debug/
 supervisor/plan.md
+.gradle/

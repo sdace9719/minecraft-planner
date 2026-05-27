@@ -2,14 +2,13 @@
 """Full iron pickaxe crafting flow with Baritone pathfinding and inventory verification.
 
 Steps:
-  1. Craft planks + sticks (bulk, all 2x2)
+  1. Craft planks + sticks (2x2)
   2. Smelt raw_iron
-  3. Wait for smelting to complete (poll furnace burning state)
-  4. Collect furnace via Baritone goto + inventory delta check
-  5. Craft iron_pickaxe (3x3 — table left in world by skipBreak)
-  6. Collect crafting table via Baritone goto + inventory delta check
-
-Requires: spruce logs -> planks, raw_iron, coal, crafting table, furnace, Baritone mod.
+  3. Wait for smelting to complete
+  4. Collect furnace via Baritone
+  5. Ensure crafting table in hotbar (recover if needed)
+  6. Craft iron_pickaxe (3x3)
+  7. Cleanup: recover any remaining placed blocks
 """
 
 import json
@@ -84,7 +83,6 @@ def wait_for_smelt_done(x: int, y: int, z: int, max_wait_s: int = 120):
 
 
 def count_in_inventory(item_id: str) -> int:
-    """Count total items of given minecraft:id in player inventory."""
     try:
         inv = get("/inventory")
     except Exception:
@@ -95,7 +93,7 @@ def count_in_inventory(item_id: str) -> int:
 
 
 def ensure_in_hotbar(item_name: str) -> bool:
-    """Check inventory, swap to hotbar if in main inv, verify it worked."""
+    """Check inventory, swap if in main inv, verify it worked."""
     inv = get("/inventory")
     in_hotbar = any(e.get("item") == item_name and e.get("slot", 99) < 9 for e in (inv if isinstance(inv, list) else []))
     if in_hotbar:
@@ -103,8 +101,9 @@ def ensure_in_hotbar(item_name: str) -> bool:
         return True
     in_main = any(e.get("item") == item_name and e.get("slot", 99) >= 9 for e in (inv if isinstance(inv, list) else []))
     if in_main:
-        print(f"  Swapping {item_name} to hotbar...", end="", flush=True)
-        post("/bot/swap-hotbar", {"itemsToHotbar": [item_name.split(":")[-1]]})
+        short = item_name.split(":")[-1]
+        print(f"  Swapping {short} to hotbar...", end="", flush=True)
+        post("/bot/swap-hotbar", {"itemsToHotbar": [short]})
         for _ in range(20):
             time.sleep(0.25)
             inv2 = get("/inventory")
@@ -117,34 +116,43 @@ def ensure_in_hotbar(item_name: str) -> bool:
 
 
 def collect_block(item_id: str, x: int, y: int, z: int, max_wait_s: int = 30) -> bool:
-    """Send Baritone to block position, verify item appears in inventory (delta >= 1)."""
+    """Baritone goto block, verify item appears in inventory (delta >= 1)."""
     before = count_in_inventory(item_id)
     if before < 0:
-        print(f"  WARNING: Could not read inventory before goto")
         before = 0
-
     print(f"  Collecting {item_id} at ({x},{y},{z}) (have {before})...", end="", flush=True)
     post("/bot/pickup_placed_block", {"x": x, "y": y, "z": z})
-
     for _ in range(max_wait_s * 2):
         time.sleep(0.5)
         after = count_in_inventory(item_id)
-        if after < 0:
-            continue
+        if after < 0: continue
         if after > before:
             print(f" collected! (delta=+{after - before})")
             return True
         print(".", end="", flush=True)
-
     after = count_in_inventory(item_id)
     delta = after - before if after >= 0 else -1
     print(f" FAILED (delta={delta})")
     return False
 
 
+def collect_all_blocks(item_name: str, positions: list):
+    """Try to collect item at each known position. Skip if already in inventory."""
+    if ensure_in_hotbar(item_name):
+        return  # already have it
+    for pos_str in positions:
+        x, y, z = map(int, pos_str.split(","))
+        if collect_block(item_name, x, y, z):
+            ensure_in_hotbar(item_name)
+            return
+    print(f"  WARNING: Could not collect {item_name} from any known position", file=sys.stderr)
+
+
 def main():
+    tracked_positions = []  # (item, x, y, z) tuples
+
     # ── Step 1: Craft planks and sticks ──
-    step(1, "Craft spruce planks (12) and sticks (8)")
+    step(1, "Craft spruce planks (4) and sticks (4)")
     r = post("/bulk/craft", {
         "requests": [
             {"item": "spruce_planks", "count": 4},
@@ -153,61 +161,55 @@ def main():
     })
     print(f"  Result: {json.dumps(r)}")
     if r.get("status") != "ok":
-        print(f"  FAILED: {r.get('message')}", file=sys.stderr)
-        sys.exit(1)
+        print(f"  FAILED: {r.get('message')}", file=sys.stderr); sys.exit(1)
     wait_for_idle("craft planks + sticks")
 
     # ── Step 2: Ensure furnace in hotbar, then smelt ──
     step(2, "Smelt raw_iron (3)")
     if not ensure_in_hotbar("minecraft:furnace"):
-        print("  FAILED: Furnace not in hotbar", file=sys.stderr)
-        sys.exit(1)
+        print("  FAILED: Furnace not in hotbar", file=sys.stderr); sys.exit(1)
     r = post("/bulk/smelt", {
         "requests": [{"item": "raw_iron", "count": 3}]
     })
     print(f"  Result: {json.dumps(r)}")
     if r.get("status") != "ok":
-        print(f"  FAILED: {r.get('message')}", file=sys.stderr)
-        sys.exit(1)
+        print(f"  FAILED: {r.get('message')}", file=sys.stderr); sys.exit(1)
     wait_for_idle("smelt raw_iron")
 
-    # Get furnace position
-    positions = get("/bot/positions").get("positions", [])
-    fx = fy = fz = None
-    if positions:
-        fx, fy, fz = map(int, positions[0].split(","))
-        print(f"  Furnace at ({fx},{fy},{fz})")
+    # Record furnace position
+    for pos in get("/bot/positions").get("positions", []):
+        if pos not in [p[1] for p in tracked_positions]:
+            x, y, z = map(int, pos.split(","))
+            tracked_positions.append(("furnace", pos, x, y, z))
+            print(f"  Furnace at ({x},{y},{z})")
 
-    # ── Step 3: Wait for smelting to finish ──
+    # ── Step 3: Wait for smelting ──
     step(3, "Wait for smelting to complete")
-    if fx is not None:
-        wait_for_smelt_done(fx, fy, fz)
+    for item, pos_str, x, y, z in tracked_positions:
+        if item == "furnace":
+            wait_for_smelt_done(x, y, z)
 
-    # ── Step 4: Collect furnace via Baritone ──
+    # ── Step 4: Collect furnace ──
     step(4, "Collect furnace")
-    if fx is not None:
-        if not collect_block("minecraft:furnace", fx, fy, fz):
-            print("  WARNING: Could not collect furnace, proceeding anyway", file=sys.stderr)
-    else:
-        print("  WARNING: No furnace position available, skipping")
+    furnace_positions = [p[1] for p in tracked_positions if p[0] == "furnace"]
+    collect_all_blocks("minecraft:furnace", furnace_positions)
 
     # ── Step 5: Ensure crafting table in hotbar ──
-    step(5, "Ensure crafting table is in hotbar")
+    step(5, "Ensure crafting table in hotbar")
     if not ensure_in_hotbar("minecraft:crafting_table"):
-        # Not in inventory — recover via Baritone from known position
         print("  Table not in inventory, recovering via Baritone...")
         table_positions = get("/bot/positions").get("positions", [])
-        if table_positions:
-            tx, ty, tz = map(int, table_positions[0].split(","))
-            print(f"  Table at ({tx},{ty},{tz})")
-            if collect_block("minecraft:crafting_table", tx, ty, tz):
+        # Filter out furnace positions
+        table_only = [p for p in table_positions if p not in furnace_positions]
+        if table_only:
+            x, y, z = map(int, table_only[-1].split(","))
+            print(f"  Table at ({x},{y},{z})")
+            if collect_block("minecraft:crafting_table", x, y, z):
                 ensure_in_hotbar("minecraft:crafting_table")
             else:
-                print("  FAILED: Could not collect table", file=sys.stderr)
-                sys.exit(1)
+                print("  FAILED: Could not collect table", file=sys.stderr); sys.exit(1)
         else:
-            print("  FAILED: No table position and not in inventory", file=sys.stderr)
-            sys.exit(1)
+            print("  FAILED: No table position and not in inventory", file=sys.stderr); sys.exit(1)
 
     # ── Step 6: Craft iron pickaxe ──
     step(6, "Craft iron pickaxe (1)")
@@ -216,9 +218,24 @@ def main():
     })
     print(f"  Result: {json.dumps(r)}")
     if r.get("status") != "ok":
-        print(f"  FAILED: {r.get('message')}", file=sys.stderr)
-        sys.exit(1)
+        print(f"  FAILED: {r.get('message')}", file=sys.stderr); sys.exit(1)
     wait_for_idle("craft iron pickaxe")
+
+    # Record table position
+    for pos in get("/bot/positions").get("positions", []):
+        if pos not in [p[1] for p in tracked_positions]:
+            x, y, z = map(int, pos.split(","))
+            tracked_positions.append(("table", pos, x, y, z))
+            print(f"  Table at ({x},{y},{z})")
+
+    # ── Step 7: Cleanup — recover any remaining placed blocks ──
+    step(7, "Cleanup — recover all placed blocks")
+    remaining = [(item, pos_str, x, y, z) for item, pos_str, x, y, z in tracked_positions]
+    for item, pos_str, x, y, z in remaining:
+        mc_id = f"minecraft:{item}"
+        if not ensure_in_hotbar(mc_id):
+            print(f"  Recovering {item} at ({x},{y},{z})...")
+            collect_block(mc_id, x, y, z)
 
     print("\n=== Done! Iron pickaxe should be in inventory. ===")
 

@@ -45,6 +45,7 @@ public class BulkSmelter {
                        List<Item> fuelItems, List<Integer> fuelQtys,
                        int furnaceSlot, BulkSmeltListener listener) {
         LOG.info("=== BULK SMELT: {} items, furnaceSlot={} ===", requests.size(), furnaceSlot);
+        lastPositions.clear();
         this.requests = requests;
         this.smeltItems = smeltItems;
         this.smeltQtys = smeltQtys;
