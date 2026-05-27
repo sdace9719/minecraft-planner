@@ -1,5 +1,6 @@
 package com.recipecraft;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,12 +40,42 @@ public class RecipeCrafter {
     private static int totalRequested;
     private static final CraftingTableCrafter tableCrafter = new CraftingTableCrafter();
     private static final FurnaceSmelter furnaceSmelter = new FurnaceSmelter();
+    private static final BulkCrafter bulkCrafter = new BulkCrafter();
+    private static final BulkSmelter bulkSmelter = new BulkSmelter();
+    // Queue for 2x2-only bulk crafting (no table needed, one item after another)
+    private static final List<CraftRequest> bulk2x2Queue = new ArrayList<>();
+    private static final List<NetworkRecipeId> bulk2x2RecipeIds = new ArrayList<>();
+    private static final List<Integer> bulk2x2BatchCounts = new ArrayList<>();
+    private static int bulk2x2Index = 0;
+    private static BulkCraftListener bulk2x2Listener;
 
     public static void register() {
         ClientTickEvents.END_CLIENT_TICK.register(RecipeCrafter::onClientTick);
     }
 
+    public static boolean isBusy() {
+        return bulkSmelter.isActive() || bulkCrafter.isActive()
+            || furnaceSmelter.isActive() || tableCrafter.isActive()
+            || !bulk2x2Queue.isEmpty();
+    }
+
+    /** Returns last positions from bulk craft/smelt as "x,y,z" strings. */
+    public static List<String> getLastPositions() {
+        List<String> all = new ArrayList<>();
+        all.addAll(bulkCrafter.getLastPositions());
+        all.addAll(bulkSmelter.getLastPositions());
+        return all;
+    }
+
     private static void onClientTick(MinecraftClient client) {
+        if (bulkSmelter.isActive()) {
+            bulkSmelter.onTick(client);
+            return;
+        }
+        if (bulkCrafter.isActive()) {
+            bulkCrafter.onTick(client);
+            return;
+        }
         if (furnaceSmelter.isActive()) {
             furnaceSmelter.onTick(client);
             return;
@@ -85,8 +116,21 @@ public class RecipeCrafter {
             batchesRemaining--;
             needsPickup = true;
         } else {
-            sendOk(client, "Crafted " + totalRequested + "x items.");
-            reset();
+            // Check if a 2x2 bulk queue has more items
+            if (!bulk2x2Queue.isEmpty() && bulk2x2Index < bulk2x2Queue.size()) {
+                notifyBulk2x2ItemComplete();
+                startNextBulk2x2();
+            } else if (!bulk2x2Queue.isEmpty()) {
+                notifyBulk2x2ItemComplete();
+                // All 2x2 bulk items done
+                LOG.info("bulkCraft (2x2): all {} items complete", bulk2x2Queue.size());
+                if (bulk2x2Listener != null) bulk2x2Listener.onAllComplete();
+                clearBulk2x2();
+                reset();
+            } else {
+                sendOk(client, "Crafted " + totalRequested + "x items.");
+                reset();
+            }
         }
     }
 
@@ -115,12 +159,12 @@ public class RecipeCrafter {
 
         RecipeDisplayEntry found = findRecipeDisplay(player, targetItem, itemName);
         if (found == null) {
-            LOG.error("craft: no 2x2 recipe for '{}'", itemName);
+            LOG.error("craft: no recipe for '{}'", itemName);
             ChatInterceptor.sendFeedback("No crafting recipe for '" + itemName + "'.");
             return;
         }
 
-        int outputPerCraft = getOutputCount(found, targetItem);
+        int outputPerCraft = getOutputCount(found);
         if (outputPerCraft <= 0) {
             LOG.error("craft: outputPerCraft <= 0");
             return;
@@ -140,7 +184,6 @@ public class RecipeCrafter {
             LOG.info("craft: 3x3 recipe — checking crafting table and ingredients");
 
             int tableSlot = findCraftingTableInHotbar(player);
-            LOG.info("craft: craftingTable hotbar slot={}", tableSlot);
             if (tableSlot < 0) {
                 if (hasCraftingTableAnywhere(player)) {
                     sendError(client, "Crafting table must be in the hotbar.");
@@ -424,7 +467,7 @@ public class RecipeCrafter {
 
     // ── Output count ──
 
-    private static int getOutputCount(RecipeDisplayEntry entry, Item targetItem) {
+    private static int getOutputCount(RecipeDisplayEntry entry) {
         RecipeDisplay display = entry.display();
         SlotDisplay result = null;
         if (display instanceof ShapedCraftingRecipeDisplay shaped) {
@@ -593,6 +636,182 @@ public class RecipeCrafter {
         int syncId = client.player.currentScreenHandler.syncId;
         CraftRequestC2SPacket packet = new CraftRequestC2SPacket(syncId, currentRecipeId, false);
         client.getNetworkHandler().sendPacket(packet);
+    }
+
+    private static void startNextBulk2x2() {
+        CraftRequest req = bulk2x2Queue.get(bulk2x2Index);
+        currentRecipeId = bulk2x2RecipeIds.get(bulk2x2Index);
+        int batches = bulk2x2BatchCounts.get(bulk2x2Index);
+        totalRequested = req.count();
+        batchesRemaining = batches;
+        needsPickup = false;
+        LOG.info("bulkCraft (2x2): item {}/{} '{}' x{} batches={}",
+            bulk2x2Index + 1, bulk2x2Queue.size(), req.itemName(), req.count(), batches);
+        bulk2x2Index++;
+    }
+
+    private static void notifyBulk2x2ItemComplete() {
+        // Called when a 2x2 item finishes — the item at (bulk2x2Index - 1) just completed
+        if (bulk2x2Listener != null && bulk2x2Index > 0) {
+            CraftRequest done = bulk2x2Queue.get(bulk2x2Index - 1);
+            bulk2x2Listener.onItemComplete(bulk2x2Index - 1, done.itemName(), done.count());
+        }
+    }
+
+    private static void clearBulk2x2() {
+        bulk2x2Queue.clear();
+        bulk2x2RecipeIds.clear();
+        bulk2x2BatchCounts.clear();
+        bulk2x2Index = 0;
+        bulk2x2Listener = null;
+    }
+
+    // ── Bulk crafting/smelting API ──
+
+    public static BulkResult bulkCraft(MinecraftClient client, List<CraftRequest> requests,
+                                        BulkCraftListener listener) {
+        return bulkCraft(client, requests, listener, false);
+    }
+
+    public static BulkResult bulkCraft(MinecraftClient client, List<CraftRequest> requests,
+                                        BulkCraftListener listener, boolean skipBreak) {
+        LOG.info("bulkCraft: {} items", requests.size());
+        if (!validateClientState(client)) return BulkResult.fail("Not in a game world.");
+        ClientPlayerEntity player = client.player;
+
+        List<NetworkRecipeId> recipeIds = new ArrayList<>();
+        List<Integer> batchCounts = new ArrayList<>();
+        boolean needs3x3 = false;
+        MergedIngredients merged = new MergedIngredients();
+
+        for (CraftRequest req : requests) {
+            Item item = lookupItem(req.itemName());
+            if (item == null) return BulkResult.fail("Unknown item: " + req.itemName());
+
+            RecipeDisplayEntry entry = findRecipeDisplay(player, item, req.itemName());
+            if (entry == null) return BulkResult.fail("No recipe for: " + req.itemName());
+
+            int perCraft = getOutputCount(entry);
+            if (perCraft <= 0) return BulkResult.fail("Cannot determine output count for: " + req.itemName());
+            if (req.count() % perCraft != 0)
+                return BulkResult.fail(req.itemName() + ": count must be multiple of " + perCraft);
+
+            int batches = req.count() / perCraft;
+            recipeIds.add(entry.id());
+            batchCounts.add(batches);
+
+            if (recipeNeeds3x3(entry)) needs3x3 = true;
+
+            // Merge ingredient requirements
+            RecipeDisplay display = entry.display();
+            List<SlotDisplay> ingredients = null;
+            if (display instanceof ShapedCraftingRecipeDisplay shaped) ingredients = shaped.ingredients();
+            else if (display instanceof ShapelessCraftingRecipeDisplay shapeless) ingredients = shapeless.ingredients();
+            if (ingredients != null) {
+                for (SlotDisplay slot : ingredients) {
+                    if (slot instanceof SlotDisplay.EmptySlotDisplay) continue;
+                    TagKey<Item> tag = getTagFromSlotDisplay(slot);
+                    if (tag != null) { merged.addTag(tag, batches); continue; }
+                    Item ingredientItem = getItemFromSlotDisplay(slot);
+                    if (ingredientItem != null) merged.addItem(ingredientItem, batches);
+                }
+            }
+        }
+
+        if (needs3x3) {
+            int tableSlot = findCraftingTableInHotbar(player);
+            if (tableSlot < 0)
+                return BulkResult.fail(hasCraftingTableAnywhere(player)
+                    ? "Crafting table must be in the hotbar." : "No crafting table in inventory.");
+            String err = merged.checkAgainstInventory(player, RecipeCrafter::countInInventory, RecipeCrafter::countTagInInventory);
+            if (err != null) return BulkResult.fail(err);
+            int totalBatches = batchCounts.stream().mapToInt(Integer::intValue).sum();
+            LOG.info("bulkCraft: {} items, {} total batches, tableSlot={} skipBreak={}", requests.size(), totalBatches, tableSlot, skipBreak);
+            bulkCrafter.setSkipBreak(skipBreak);
+            bulkCrafter.start(client, requests, recipeIds, batchCounts, tableSlot, listener);
+            return BulkResult.ok(totalBatches);
+        }
+
+        // All 2x2 — no crafting table needed, process one after another via tick loop
+        clearBulk2x2();
+        bulk2x2Queue.addAll(requests);
+        bulk2x2RecipeIds.addAll(recipeIds);
+        bulk2x2BatchCounts.addAll(batchCounts);
+        bulk2x2Index = 0;
+        bulk2x2Listener = listener;
+        startNextBulk2x2();
+        int totalBatches = batchCounts.stream().mapToInt(Integer::intValue).sum();
+        LOG.info("bulkCraft (all 2x2): {} items, {} total batches", requests.size(), totalBatches);
+        return BulkResult.ok(totalBatches);
+    }
+
+    public static BulkResult bulkSmelt(MinecraftClient client, List<SmeltRequest> requests,
+                                        BulkSmeltListener listener) {
+        LOG.info("bulkSmelt: {} items", requests.size());
+        if (!validateClientState(client)) return BulkResult.fail("Not in a game world.");
+        ClientPlayerEntity player = client.player;
+
+        List<Item> smeltItems = new ArrayList<>();
+        List<Integer> smeltQtys = new ArrayList<>();
+        List<Item> fuelItems = new ArrayList<>();
+        List<Integer> fuelQtys = new ArrayList<>();
+        int totalBatches = 0;
+        Map<Item, Integer> totalSmeltNeeded = new HashMap<>();
+        Map<Item, Integer> totalFuelNeeded = new HashMap<>();
+
+        for (SmeltRequest req : requests) {
+            Item smeltItem = lookupItem(req.itemName());
+            if (smeltItem == null) return BulkResult.fail("Unknown item: " + req.itemName());
+
+            Item fuelItem = lookupItem(req.fuelName());
+            if (fuelItem == null) return BulkResult.fail("Unknown fuel: " + req.fuelName());
+
+            int fq = calcFuelQty(req.count(), fuelItem);
+            if (fq <= 0) return BulkResult.fail("'" + req.fuelName() + "' is not a known fuel.");
+
+            if (isPlank(fuelItem)) {
+                Item best = findPlankWithQty(player, fq);
+                if (best != null) fuelItem = best;
+            }
+
+            smeltItems.add(smeltItem);
+            smeltQtys.add(req.count());
+            fuelItems.add(fuelItem);
+            fuelQtys.add(fq);
+            totalBatches++;
+
+            totalSmeltNeeded.merge(smeltItem, req.count(), Integer::sum);
+            totalFuelNeeded.merge(fuelItem, fq, Integer::sum);
+        }
+
+        int furnaceSlot = -1;
+        for (int i = 0; i < 9; i++) {
+            if (player.getInventory().getStack(i).isOf(Items.FURNACE)) { furnaceSlot = i; break; }
+        }
+        if (furnaceSlot < 0) {
+            for (int i = 9; i < player.getInventory().size(); i++) {
+                if (player.getInventory().getStack(i).isOf(Items.FURNACE))
+                    return BulkResult.fail("Furnace must be in the hotbar.");
+            }
+            return BulkResult.fail("No furnace in inventory.");
+        }
+
+        for (var e : totalSmeltNeeded.entrySet()) {
+            int have = countInInventory(player, e.getKey());
+            if (have < e.getValue())
+                return BulkResult.fail("Not enough " + e.getKey().getName().getString()
+                    + ". Need " + e.getValue() + ", have " + have + ".");
+        }
+        for (var e : totalFuelNeeded.entrySet()) {
+            int have = countInInventory(player, e.getKey());
+            if (have < e.getValue())
+                return BulkResult.fail("Not enough fuel (" + e.getKey().getName().getString()
+                    + "). Need " + e.getValue() + ", have " + have + ".");
+        }
+
+        LOG.info("bulkSmelt: {} items, {} furnace batches", requests.size(), totalBatches);
+        bulkSmelter.start(client, requests, smeltItems, smeltQtys, fuelItems, fuelQtys, furnaceSlot, listener);
+        return BulkResult.ok(totalBatches);
     }
 
     // ── Chat feedback ──

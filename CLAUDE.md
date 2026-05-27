@@ -1,3 +1,9 @@
+---
+description: General coding guidelines and architectural standards for the project
+globs: ["**/*"]
+alwaysApply: true
+---
+
 ## General Guidelines
 
 - If there are any existing frameworks or libraries, use them for the use case, instead of re-inventing the wheel.
@@ -7,22 +13,9 @@
 - directory structures is necessary. Organize code under relevant directory names. it helps keep root folder organized.
 - for all responses, start with 'ROBOT: ' and end with a robot emoji.
 - Do not assume anything. Ask questions to clear doubts and ambiguity.
-- Do not implement ant silent fallbacks or supress errors and continue. Everything has to be verified with me first. Implement graceful error degradation and propogation. Do not be afraid to fail.
-- In case for any reason a feature cannot be implemented due to any reason, either clear our understanding or just gracefully fail to do so. do not implement half cooked code.
-- Treat everything as a hard requirement. Do notby work around by implementing a 'close enough' fix. If it can't be implemented, is contradictory or ambiguous, then raise appropriate question. If there are cases when the code can error out or fail when implementing the request, let it fail. This is the 'all or none' approach.
-- Must follow all instructions in architecture.md
-- Must not execute potentially dangerous commands that are hard to recover. When there is a possibility/need, ask for manual input. Do not execute without permission
-- - If there are any existing frameworks or libraries, use them for the use case, instead of re-inventing the wheel.
-- Any test case files i ask to create should not be removed without permission
-- functions that only perform one particular functions. If a function's task cannot be described in 100 characters its probably doing a lot of things which can be modularized into other functions.
-- code files should be small. This may lead to increased number of files but don't create files unecessary and when not asked. only create when necessary. if its not asked, do not create useless files.
-- directory structures is necessary. Organize code under relevant directory names. it helps keep root folder organized.
-- for all responses, start with 'ROBOT: ' and end with a robot emoji.
-- Do not assume anything. Ask questions to clear doubts and ambiguity.
-- Do not implement ant silent fallbacks or supress errors and continue. Everything has to be verified with me first. Implement graceful error degradation and propogation. Do not be afraid to fail.
-- In case for any reason a feature cannot be implemented due to any reason, either clear our understanding or just gracefully fail to do so. do not implement half cooked code.
-- Treat everything as a hard requirement. Do not work around by implementing a 'close enough' fix. If it can't be implemented, is contradictory or ambiguous, then raise appropriate question. If there are cases when the code can error out or fail when implementing the request, let it fail. This is the 'all or none' approach.
-- Must follow all instructions in architecture.md
-- Each time when deciding to implement fallback, instead create a hard fail exception and exit gracefully.
-- create all temporary debug script for any debug/testing inside temp folder. do not run inline bash commands in     
-  shell for future tasks            
+- Do not implement any silent fallbacks or supress errors and continue. Everything has to be verified first. Implement graceful error degradation and propogation. Assume hard fail policy.
+- In case for any reason a feature cannot be implemented, refuse to do it. do not implement half baked code.
+- every required feature is a hard requirement. Do not work around it lazily by implementing a 'close enough' fix. If it can't be implemented, is contradictory or ambiguous, then raise appropriate concerns. If there are cases when the code can error out or fail when implementing the request, let it fail. This is the 'all or none' approach.
+- When implementing or fixing code, DO NOT REMOVE?EDIT EXISTING FEATURES. Ask for approval if it requires modifying existing code.
+- when debugging, ensure whatever changes are removed but were needed are added back. ensure none of the required features are removed while debugging.
+- create all temporary debug script for any debug/testing inside temp folder. do not run inline bash commands in shell for future tasks.  Do not execute bash commands in-line.          

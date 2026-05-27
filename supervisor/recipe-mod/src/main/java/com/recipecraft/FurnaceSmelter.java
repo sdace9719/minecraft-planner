@@ -9,7 +9,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.c2s.play.ClickSlotC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
-import net.minecraft.network.packet.c2s.play.UpdateSelectedSlotC2SPacket;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.screen.sync.ItemStackHash;
 import net.minecraft.text.Text;
@@ -64,6 +63,8 @@ public class FurnaceSmelter {
     private int loadingStackSize;
     private int loadingSplitTicks;
 
+    public BlockPos getFurnacePos() { return furnacePos; }
+
     public boolean isActive() {
         return state != State.IDLE && state != State.DONE;
     }
@@ -110,10 +111,10 @@ public class FurnaceSmelter {
             case LOOK_OPEN           -> stateLookOpen(client);
             case WAIT_OPEN           -> stateWaitOpen(client);
             case LOAD_INPUT_GRAB     -> stateLoadGrab(client, smeltInvSlot, 0, smeltQty, State.LOAD_INPUT_DROP);
-            case LOAD_INPUT_DROP    -> stateLoadDrop(client, 0, smeltInvSlot, State.LOAD_INPUT_RETURN, State.LOAD_INPUT_RETURN);
+            case LOAD_INPUT_DROP    -> stateLoadDrop(client, 0, State.LOAD_INPUT_RETURN);
             case LOAD_INPUT_RETURN  -> stateLoadReturn(client, smeltInvSlot, State.LOAD_FUEL_GRAB);
             case LOAD_FUEL_GRAB     -> stateLoadGrab(client, fuelInvSlot, 1, fuelQty, State.LOAD_FUEL_DROP);
-            case LOAD_FUEL_DROP     -> stateLoadDrop(client, 1, fuelInvSlot, State.LOAD_FUEL_RETURN, State.LOAD_FUEL_RETURN);
+            case LOAD_FUEL_DROP     -> stateLoadDrop(client, 1, State.LOAD_FUEL_RETURN);
             case LOAD_FUEL_RETURN   -> stateLoadReturn(client, fuelInvSlot, State.CLOSE_SCREEN);
             case CLOSE_SCREEN        -> stateClose(client);
             case DONE                -> stateDone(client);
@@ -199,15 +200,6 @@ public class FurnaceSmelter {
                 inputStack.getItem(), inputStack.getCount(),
                 fuelStack.getItem(), fuelStack.getCount());
         }
-    }
-
-    // Read actual item count from furnace slot (client-side view)
-    private int readFurnaceSlotCount(MinecraftClient client, int furnaceSlot) {
-        var handler = client.player.currentScreenHandler;
-        if (handler != null && handler.slots.size() > furnaceSlot) {
-            return handler.slots.get(furnaceSlot).getStack().getCount();
-        }
-        return -1;
     }
 
     private void fail(MinecraftClient client, String msg) {
@@ -367,24 +359,13 @@ public class FurnaceSmelter {
         this.loadingTargetFurnaceSlot = furnaceSlot;
         this.loadingNeeded = needed;
 
-        if (stackSize <= needed) {
-            // Stack fits — just pick up and drop all, skip the per-item loop
-            sendClick(client, guiSrc, 0, SlotActionType.PICKUP);
-            this.loadingSplitTicks = 0; // signal: no splitting needed
-            advance(dropState);
-        } else {
-            sendClick(client, guiSrc, 0, SlotActionType.PICKUP);
-            this.loadingSplitTicks = 0;
-            advance(dropState);
-        }
+        sendClick(client, guiSrc, 0, SlotActionType.PICKUP);
+        this.loadingSplitTicks = 0;
+        advance(dropState);
     }
 
     // DROP: place 1 item per tick from cursor into furnace slot, N times
-    private void stateLoadDrop(MinecraftClient client, int furnaceSlot, int rawSrcSlot,
-                                State returnState, State skipReturn) {
-        if (loadingSplitTicks == 0 && loadingSplitTicks == 0) { // not needed, skip comment
-        }
-        // Place 1 item from cursor into furnace
+    private void stateLoadDrop(MinecraftClient client, int furnaceSlot, State returnState) {
         sendClick(client, furnaceSlot, 1, SlotActionType.PICKUP);
         loadingSplitTicks++;
         LOG.info("DROP: {}/{} items placed in furnace slot {}", loadingSplitTicks, loadingNeeded, furnaceSlot);
@@ -410,6 +391,8 @@ public class FurnaceSmelter {
         client.player.closeHandledScreen();
         advance(State.DONE);
     }
+
+    // ── DONE ──
 
     private void stateDone(MinecraftClient client) {
         LOG.info("DONE: smelting {}x {} with {}x {}",

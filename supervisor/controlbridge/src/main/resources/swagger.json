@@ -1,0 +1,172 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "ControlBridge API",
+    "description": "HTTP gateway for RecipeCraft — automate Minecraft crafting and smelting via REST API",
+    "version": "1.0.0"
+  },
+  "servers": [{"url": "http://localhost:8765", "description": "Local Minecraft instance"}],
+  "paths": {
+    "/health": {
+      "get": {
+        "tags": ["System"],
+        "summary": "Health check",
+        "responses": {
+          "200": {
+            "description": "Server is running",
+            "content": {"application/json": {"schema": {"$ref": "#/components/schemas/HealthResponse"}}}
+          }
+        }
+      }
+    },
+    "/craft": {
+      "post": {
+        "tags": ["Crafting"],
+        "summary": "Craft a single item",
+        "description": "Crafts the specified item with the given count. Works for both 2x2 and 3x3 recipes. 3x3 recipes require a crafting table in the hotbar.",
+        "requestBody": {
+          "required": true,
+          "content": {"application/json": {"schema": {"$ref": "#/components/schemas/CraftRequest"}}}
+        },
+        "responses": {
+          "200": {"description": "Crafting started", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/StatusResponse"}}}},
+          "400": {"description": "Invalid request", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ErrorResponse"}}}},
+          "503": {"description": "Player not in game", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ErrorResponse"}}}}
+        }
+      }
+    },
+    "/smelt": {
+      "post": {
+        "tags": ["Smelting"],
+        "summary": "Smelt a single item type",
+        "description": "Places a furnace, loads input items and fuel, closes GUI. Smelting happens in background. Default fuel is oak_planks.",
+        "requestBody": {
+          "required": true,
+          "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SmeltRequest"}}}
+        },
+        "responses": {
+          "200": {"description": "Smelting started"},
+          "400": {"description": "Invalid request"}
+        }
+      }
+    },
+    "/bulk/craft": {
+      "post": {
+        "tags": ["Crafting"],
+        "summary": "Bulk craft multiple items",
+        "description": "Places crafting table once, crafts all items sequentially, breaks table. Requires at least one 3x3 recipe. Ingredients are summed and pre-checked before any placement.",
+        "requestBody": {
+          "required": true,
+          "content": {"application/json": {"schema": {"$ref": "#/components/schemas/BulkCraftRequest"}}}
+        },
+        "responses": {
+          "200": {"description": "Bulk crafting started", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/BulkResultResponse"}}}},
+          "400": {"description": "Pre-check failed", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ErrorResponse"}}}}
+        }
+      }
+    },
+    "/bulk/smelt": {
+      "post": {
+        "tags": ["Smelting"],
+        "summary": "Bulk smelt multiple item types",
+        "description": "Places one furnace per smelt item (different positions). Each furnace is loaded with exact quantities and left to smelt. All pre-checks run before any furnace is placed.",
+        "requestBody": {
+          "required": true,
+          "content": {"application/json": {"schema": {"$ref": "#/components/schemas/BulkSmeltRequest"}}}
+        },
+        "responses": {
+          "200": {"description": "Bulk smelting started"},
+          "400": {"description": "Pre-check failed"}
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CraftRequest": {
+        "type": "object",
+        "required": ["item", "count"],
+        "properties": {
+          "item": {"type": "string", "description": "Vanilla item name (e.g., wooden_pickaxe, stick)", "example": "wooden_pickaxe"},
+          "count": {"type": "integer", "description": "Number to craft (must be multiple of recipe output)", "example": 1}
+        }
+      },
+      "SmeltRequest": {
+        "type": "object",
+        "required": ["item", "quantity"],
+        "properties": {
+          "item": {"type": "string", "description": "Item to smelt (e.g., raw_iron, raw_copper)", "example": "raw_iron"},
+          "quantity": {"type": "integer", "description": "How many to smelt", "example": 6},
+          "fuel": {"type": "string", "description": "Fuel item name (default: oak_planks)", "example": "coal"}
+        }
+      },
+      "BulkCraftRequest": {
+        "type": "object",
+        "required": ["requests"],
+        "properties": {
+          "requests": {
+            "type": "array",
+            "items": {"$ref": "#/components/schemas/CraftRequestItem"},
+            "description": "List of items to craft"
+          }
+        }
+      },
+      "CraftRequestItem": {
+        "type": "object",
+        "required": ["item", "count"],
+        "properties": {
+          "item": {"type": "string", "example": "oak_planks"},
+          "count": {"type": "integer", "example": 12}
+        }
+      },
+      "BulkSmeltRequest": {
+        "type": "object",
+        "required": ["requests"],
+        "properties": {
+          "requests": {
+            "type": "array",
+            "items": {"$ref": "#/components/schemas/SmeltRequestItem"},
+            "description": "List of items to smelt"
+          }
+        }
+      },
+      "SmeltRequestItem": {
+        "type": "object",
+        "required": ["item", "count"],
+        "properties": {
+          "item": {"type": "string", "example": "raw_iron"},
+          "count": {"type": "integer", "example": 3},
+          "fuel": {"type": "string", "example": "coal"}
+        }
+      },
+      "HealthResponse": {
+        "type": "object",
+        "properties": {
+          "status": {"type": "string", "example": "ok"},
+          "uptime": {"type": "integer", "description": "Server uptime in seconds", "example": 123}
+        }
+      },
+      "StatusResponse": {
+        "type": "object",
+        "properties": {
+          "status": {"type": "string", "example": "ok"},
+          "message": {"type": "string", "example": "Crafting started for 1x wooden_pickaxe"}
+        }
+      },
+      "BulkResultResponse": {
+        "type": "object",
+        "properties": {
+          "status": {"type": "string", "example": "ok"},
+          "totalBatches": {"type": "integer", "description": "Total craft batches across all items", "example": 3}
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "status": {"type": "string", "example": "error"},
+          "message": {"type": "string", "example": "No furnace in inventory."}
+        }
+      }
+    }
+  }
+}

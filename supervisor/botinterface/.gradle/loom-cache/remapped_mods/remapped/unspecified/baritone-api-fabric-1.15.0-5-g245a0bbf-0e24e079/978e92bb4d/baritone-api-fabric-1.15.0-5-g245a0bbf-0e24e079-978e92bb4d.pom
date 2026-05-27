@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>remapped.unspecified</groupId>
+	<artifactId>baritone-api-fabric-1.15.0-5-g245a0bbf-0e24e079</artifactId>
+	<version>978e92bb4d</version>
+</project>

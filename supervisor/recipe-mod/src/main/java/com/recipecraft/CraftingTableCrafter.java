@@ -6,11 +6,9 @@ import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.item.AxeItem;
-import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.c2s.play.ClickSlotC2SPacket;
 import net.minecraft.network.packet.c2s.play.CraftRequestC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
-import net.minecraft.network.packet.c2s.play.UpdateSelectedSlotC2SPacket;
 import net.minecraft.recipe.NetworkRecipeId;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.screen.sync.ItemStackHash;
@@ -55,11 +53,13 @@ public class CraftingTableCrafter {
     private BlockPos placeGround;
     private int syncId;
     private int waitTicks;
+    private boolean skipPlaceAndBreak;
 
     public boolean isActive() {
         return state != State.IDLE && state != State.DONE;
     }
 
+    /** Normal start: place table, craft, break table. */
     public void start(MinecraftClient client, NetworkRecipeId recipeId, int batches,
                       int outputPerCraft, int totalCount, int tableSlot) {
         LOG.info("=== START: batches={} perCraft={} total={} tableSlot={} ===",
@@ -75,7 +75,28 @@ public class CraftingTableCrafter {
         this.placeGround = null;
         this.syncId = 0;
         this.waitTicks = 0;
+        this.skipPlaceAndBreak = false;
         this.state = State.CHECK;
+    }
+
+    /** Reuse an already-placed table: open, craft, close — no placement or breaking. */
+    public void startOnExistingTable(MinecraftClient client, NetworkRecipeId recipeId,
+                                      int batches, int totalCount, BlockPos existingTablePos) {
+        LOG.info("=== START (reuse table): batches={} total={} tablePos={} ===",
+            batches, totalCount, existingTablePos);
+        this.recipeId = recipeId;
+        this.batchesTotal = batches;
+        this.batchesDone = 0;
+        this.outputPerCraft = 1;
+        this.totalRequested = totalCount;
+        this.tableSlot = -1;
+        this.axeSlot = -1;
+        this.tablePos = existingTablePos;
+        this.placeGround = null;
+        this.syncId = 0;
+        this.waitTicks = 0;
+        this.skipPlaceAndBreak = true;
+        this.state = State.LOOK_OPEN;
     }
 
     // ── Main tick dispatcher ──
@@ -361,7 +382,11 @@ public class CraftingTableCrafter {
     private void stateClose(MinecraftClient client) {
         LOG.info("CLOSE_SCREEN: closing crafting table");
         client.player.closeHandledScreen();
-        advance(State.SWITCH_AXE);
+        if (skipPlaceAndBreak) {
+            advance(State.DONE);
+        } else {
+            advance(State.SWITCH_AXE);
+        }
     }
 
     // ── SWITCH_AXE / WAIT_AXE ──
