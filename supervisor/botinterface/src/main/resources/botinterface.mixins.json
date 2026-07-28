@@ -1,0 +1,7 @@
+{
+  "required": true,
+  "package": "com.botinterface.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "client": ["DebugNetworkMixin", "ScreenHandlerDebugMixin", "ClickSlotDebugMixin"],
+  "injectors": { "defaultRequire": 1 }
+}

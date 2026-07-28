@@ -20,7 +20,7 @@ OP_COLORS = {
     "smelt":    "#FF9800",
     "mine":     "#F44336",
     "sword":    "#9C27B0",
-    "place":    "#4CAF50",
+    "place":    "#009688",
     "stash":    "#FFD700",
     "retrieve": "#00BCD4",
     "toss":     "#795548",
@@ -123,13 +123,18 @@ def _task_label(snapshot: dict, step: int) -> str:
         return f"[{step}] TOSS {item}\n  qty: {qty_tossed} (discarded)"
     if snapshot.get("stash"):
         chest = snapshot.get("chest", "?")
-        return f"[{step}] STASH → {chest}\n  (8 slots cleared)"
+        items = snapshot.get("stashed_items", [])
+        item_list = ", ".join(f"{s['item']}×{s['qty']}" for s in items[:4])
+        if len(items) > 4:
+            item_list += f" +{len(items)-4} more"
+        return f"[{step}] STASH → {chest}\n  {item_list}"
     if snapshot.get("retrieve"):
+        chest = snapshot.get("chest", "?")
         item = snapshot.get("item", "?")
-        return f"[{step}] GO TO CHEST\n  retrieve {item}"
-    if tid == "CRAFT:chest_batch":
+        return f"[{step}] GO TO CHEST {chest}\n  retrieve {item}"
+    if tid.startswith("CRAFT:chest"):
         return f"[{step}] CRAFT chest ×{qty}\n  (consumes {qty * 8} oak_planks)"
-    if tid == "PLACE_CHEST:batch":
+    if tid.startswith("PLACE_CHEST:"):
         return f"[{step}] PLACE chest ×{qty}\n  (available for stashing)"
 
     label = f"[{step}] {op.upper()} {name} ×{qty}"
@@ -154,9 +159,11 @@ def _task_title(snapshot: dict, step: int) -> str:
         lines.append("Reason: zero future demand")
     elif snapshot.get("stash"):
         lines.append(f"Event: STASH → {snapshot.get('chest', '?')}")
-        lines.append("Freed 8+ inventory slots")
+        lines.append("Stashed items:")
+        for s in snapshot.get("stashed_items", []):
+            lines.append(f"  - {s['item']} ×{s['qty']}")
     elif snapshot.get("retrieve"):
-        lines.append("Event: GO_TO_CHEST")
+        lines.append(f"Event: GO_TO_CHEST → {snapshot.get('chest', '?')}")
         lines.append(f"Retrieved item: {snapshot.get('item', '?')}")
     else:
         lines.append(f"Item: {name}")
@@ -188,7 +195,7 @@ def _legend_html() -> str:
         ("#FF9800", "smelt"),
         ("#F44336", "mine"),
         ("#9C27B0", "sword"),
-        ("#4CAF50", "place"),
+        ("#009688", "place"),
         ("#FFD700", "STASH"),
         ("#00BCD4", "GO_TO_CHEST"),
         ("#795548", "TOSS"),
@@ -218,14 +225,14 @@ def _enrich_snapshot(snap: dict, task_by_id: dict[str, dict]) -> dict:
         snap["operation_type"] = "stash"
     elif snap.get("retrieve"):
         snap["operation_type"] = "retrieve"
-    elif tid == "CRAFT:chest_batch":
+    elif tid.startswith("CRAFT:chest"):
         snap["operation_type"] = "craft"
         snap["name"] = "chest"
-        snap.setdefault("quantity", 0)
-    elif tid == "PLACE_CHEST:batch":
+        snap.setdefault("quantity", 1)
+    elif tid.startswith("PLACE_CHEST:"):
         snap["operation_type"] = "place"
         snap["name"] = "chest"
-        snap.setdefault("quantity", 0)
+        snap.setdefault("quantity", 1)
     return snap
 
 

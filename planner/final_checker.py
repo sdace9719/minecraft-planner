@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 from planner.item_task_generator import ItemTaskGenerator
+from planner.utils.stash_optimization import ChestManager
 
 ROOT = Path(__file__).resolve().parents[1]
 PHASE5_PATH = ROOT / "tests" / "input_materials_test.phase5.json"
@@ -197,9 +198,13 @@ class CacheSimulator:
         self.tool_data = self._load_tools()
         self.blueprints = self._load_blueprints()
         self._generator = ItemTaskGenerator()
-        self._chest_counter = 0
-        self._chests: dict[str, list[dict]] = {}
-        self._available_chest_ids: list[str] = []
+        self.chest_mgr = ChestManager()
+        self._chest_inject_enabled = True
+
+    @property
+    def _chest_counter(self) -> int:
+        """Backward-compatible accessor for external scripts."""
+        return self.chest_mgr.total_chests
 
     @staticmethod
     def _load_threshold() -> int:
@@ -281,13 +286,30 @@ class CacheSimulator:
                 })
         return toss_snapshots
 
-    def _stash(self, inv: Inventory, tasks: list[dict], task_idx: int) -> str | None:
+    def _chest_craft_deps(self, tasks: list[dict], up_to_idx: int) -> list[str]:
+        """Find planks and crafting_table dependency IDs for a chest craft."""
+        deps: list[str] = []
+        for t in tasks[:up_to_idx]:
+            tid = t.get("id", "")
+            if t["name"] == "crafting_table" and t["operation_type"] == "craft" \
+                    and "mvb" not in tid and "island" not in tid:
+                deps.append(tid)
+                break
+        for t in tasks[:up_to_idx]:
+            tid = t.get("id", "")
+            if t["name"] == "oak_planks" and t["operation_type"] == "craft" \
+                    and "mvb" not in tid and "island" not in tid:
+                deps.append(tid)
+                break
+        return deps
+
+    def _stash(self, inv: Inventory, tasks: list[dict], task_idx: int) -> tuple[str | None, bool, list[dict]]:
         """Clear 8+ slots by stashing items with farthest next use.
 
         Items with zero future demand are handled by ``_toss()`` first.
         Only items with actual future demand reach this method.
         Higher priority = needed later → stashed first.
-        Returns chest_id, or None if nothing was stashed.
+        Returns (chest_id, needs_injection, stashed_items).
         """
         # Build per-slot next-use priority.
         slot_priority: list[tuple[int, int, str]] = []  # (priority, slot_idx, item)
@@ -326,18 +348,26 @@ class CacheSimulator:
                 f"occupied but no items can be evicted (all needed within 5 tasks)."
             )
 
-        if self._available_chest_ids:
-            chest_id = self._available_chest_ids.pop(0)
-        else:
-            self._chest_counter += 1
-            chest_id = f"chest_{self._chest_counter}"
+        # Find an existing chest to reuse, or create one.
+        chest_id = self.chest_mgr.find_available()
+        needs_injection = False
+        if chest_id is None:
+            # Try unplaced non-full chests (for counting-mode reuse accuracy).
+            unplaced = [c for c in self.chest_mgr._chests.values()
+                        if not c.placed and not c.is_full]
+            if unplaced:
+                unplaced.sort(key=lambda c: -c.slots_used)
+                chest_id = unplaced[0].chest_id
+            else:
+                chest_id = self.chest_mgr.create(placed=False)
+                needs_injection = True
 
         contents: list[dict] = []
         for _, slot_idx, _ in stashed:
             slot = inv.clear_slot(slot_idx)
             contents.append(slot)
-        self._chests[chest_id] = contents
-        return chest_id
+        self.chest_mgr.stash_into(chest_id, contents)
+        return chest_id, needs_injection, contents
 
     def _task_demand_for(self, task: dict, item: str) -> int:
         """How many of *item* does *task* consume?"""
@@ -376,31 +406,22 @@ class CacheSimulator:
         return tool == item or tool == base_item
 
     def _retrieve(self, inv: Inventory, chest_id: str) -> None:
-        contents = self._chests.pop(chest_id, [])
-        for slot in contents:
-            dur = slot.pop("durability", None)
-            inv.add(slot["item"], slot["qty"], durability=dur)
-        self._available_chest_ids.append(chest_id)
+        results = self.chest_mgr.retrieve_from_chest(chest_id)
+        for _, items in results:
+            for slot in items:
+                dur = slot.pop("durability", None)
+                inv.add(slot["item"], slot["qty"], durability=dur)
 
-    def _retrieve_item(self, inv: Inventory, item: str) -> bool:
-        """Search all chests for *item* and restore all instances to inventory."""
-        any_found = False
-        for chest_id, contents in list(self._chests.items()):
-            found = False
-            for slot in list(contents):
-                if slot["item"] == item:
-                    dur = slot.pop("durability", None)
-                    inv.add(slot["item"], slot["qty"], durability=dur)
-                    contents.remove(slot)
-                    found = True
-            if found:
-                any_found = True
-                if contents:
-                    self._chests[chest_id] = contents
-                else:
-                    del self._chests[chest_id]
-                    self._available_chest_ids.append(chest_id)
-        return any_found
+    def _retrieve_item(self, inv: Inventory, item: str) -> list[str]:
+        """Search all chests for *item* and restore all instances to inventory.
+        Returns list of chest_ids that items were retrieved from."""
+        accessed: list[str] = []
+        for chest_id, items in self.chest_mgr.retrieve(item):
+            accessed.append(chest_id)
+            for slot in items:
+                dur = slot.pop("durability", None)
+                inv.add(slot["item"], slot["qty"], durability=dur)
+        return accessed
 
     def _consume(self, inv: Inventory, item: str, qty: int,
                  tasks: list[dict], task_idx: int,
@@ -418,14 +439,17 @@ class CacheSimulator:
             base = base[:-len("_mvb_island")]
             candidates.append(base)
         for search in candidates:
-            if self._retrieve_item(inv, search):
-                snapshots.append({
-                    "task_index": task_idx - 1,
-                    "task_id": f"GO_TO_CHEST:{search}",
-                    "slots": inv.slots_snapshot(),
-                    "retrieve": True,
-                    "item": search,
-                })
+            chests_accessed = self._retrieve_item(inv, search)
+            if chests_accessed:
+                for cid in chests_accessed:
+                    snapshots.append({
+                        "task_index": task_idx - 1,
+                        "task_id": f"GO_TO_CHEST:{cid}",
+                        "slots": inv.slots_snapshot(),
+                        "retrieve": True,
+                        "item": search,
+                        "chest": cid,
+                    })
                 try:
                     inv.remove(item, qty)
                     return
@@ -457,19 +481,20 @@ class CacheSimulator:
             raw = raw[:-len("_mvb_island")]
         return raw
 
-    def simulate(self) -> SimulationResult:
-        with open(self.phase5_path, encoding="utf-8") as f:
-            tasks = json.load(f)
+    def simulate(self, tasks: list[dict] | None = None) -> SimulationResult:
+        if tasks is None:
+            with open(self.phase5_path, encoding="utf-8") as f:
+                tasks = json.load(f)
 
-        self._chest_counter = 0
-        self._chests = {}
-        self._available_chest_ids = []
+        self.chest_mgr.reset()
 
         inv = Inventory()
         snapshots: list[dict[str, Any]] = []
         stash_tasks: list[str] = []
 
-        for idx, task in enumerate(tasks):
+        idx = 0
+        while idx < len(tasks):
+            task = tasks[idx]
             op = task["operation_type"]
 
             # --- Toss + Stash check (before consuming) ---
@@ -479,8 +504,17 @@ class CacheSimulator:
                 snapshots.extend(toss_snaps)
                 # Step 2: stash items needed later but not imminently
                 if inv.used_slots >= self.stash_threshold:
-                    chest_id = self._stash(inv, tasks, idx + 1)
+                    chest_id, needs_injection, stashed_items = self._stash(inv, tasks, idx + 1)
                     if chest_id:
+                        if needs_injection and self._chest_inject_enabled:
+                            # Inject CRAFT:chest + PLACE_CHEST on demand
+                            deps = self._chest_craft_deps(tasks, idx)
+                            craft_t = self.chest_mgr.craft_chest_task(deps, chest_id=chest_id)
+                            place_t = self.chest_mgr.place_chest_task(
+                                [craft_t["id"]], chest_id=chest_id)
+                            tasks[idx:idx] = [craft_t, place_t]
+                            continue  # re-process from injected craft task
+
                         stash_tasks.append(chest_id)
                         snapshots.append({
                             "task_index": idx,
@@ -488,12 +522,13 @@ class CacheSimulator:
                             "slots": inv.slots_snapshot(),
                             "stash": True,
                             "chest": chest_id,
+                            "stashed_items": [
+                                {"item": s["item"], "qty": s["qty"]}
+                                for s in stashed_items
+                            ],
                         })
 
             # --- Consume inputs ---
-            # Ingredients are consumed once per task (blueprint quantity),
-            # NOT once per dependency (the deps are producer chunks, not
-            # independent consumption events).
             consumed: set[str] = set()
             for dep in task.get("dependencies", []):
                 dep_name = self._dep_item_name(dep)
@@ -554,11 +589,19 @@ class CacheSimulator:
             # --- Produce output ---
             name = task["name"]
             qty = task["quantity"]
-            if op == "place":
+            if op == "place" and name == "chest":
                 inv.remove(name, qty)
-                for _ in range(qty):
-                    self._chest_counter += 1
-                    self._available_chest_ids.append(f"chest_{self._chest_counter}")
+                cid = task.get("chest_id")
+                if cid:
+                    self.chest_mgr.place(cid)
+                else:
+                    # Batch place: place unplaced chests up to qty
+                    unplaced = [c for c in self.chest_mgr._chests.values()
+                                if not c.placed]
+                    for chest in unplaced[:qty]:
+                        self.chest_mgr.place(chest.chest_id)
+            elif op == "place":
+                inv.remove(name, qty)
             elif _is_tool(name):
                 dur = _tool_durability(name)
                 inv.add(name, qty, durability=dur)
@@ -571,6 +614,8 @@ class CacheSimulator:
                 "task_id": task["id"],
                 "slots": inv.slots_snapshot(),
             })
+
+            idx += 1
 
         return SimulationResult(
             success=True,
@@ -770,24 +815,27 @@ class CacheSimulator:
         return tasks
 
     def simulate_with_chest_overhead(self) -> SimulationResult:
-        """Run simulation, inject upfront chest crafting, and iterate to convergence."""
+        """Run simulation, inject chest craft+place on demand, converge overhead."""
         with open(self.phase5_path, encoding="utf-8") as f:
-            tasks = json.loads(f.read())
+            tasks = json.load(f)
 
-        # First pass: count how many stashes occur without chest overhead.
+        # First pass: counting mode (count chests without injecting craft tasks).
+        self._chest_inject_enabled = False
         result: SimulationResult | None = None
         try:
-            result = self.simulate()
-            if result.success and self._chest_counter == 0:
-                return result
+            result = self.simulate(tasks=[dict(t) for t in tasks])
         except SimulationError as e:
             result = SimulationResult(success=False, error=str(e),
                                        inventory_snapshots=[], stashed_chests=[])
 
-        chest_count = self._chest_counter
+        chest_count = self.chest_mgr.total_chests
         if chest_count <= 0:
-            return self.simulate()
+            self._chest_inject_enabled = True
+            return self.simulate(tasks=tasks)
 
+        # Apply overhead for the counted chests.
+        self._apply_chest_overhead(tasks, chest_count)
+        self._chest_inject_enabled = True
         prev_chest_count = 0
 
         for _iteration in range(5):
@@ -796,30 +844,20 @@ class CacheSimulator:
                 break
 
             self._apply_chest_overhead(tasks, delta)
-            self._ensure_chest_tasks(tasks, chest_count)
-
             prev_chest_count = chest_count
 
-            tmp_path = self.phase5_path.with_suffix(".tmp.json")
-            tmp_path.write_text(json.dumps(tasks, indent=2), encoding="utf-8")
-            orig = self.phase5_path
-            self.phase5_path = tmp_path
-
             try:
-                result = self.simulate()
+                result = self.simulate(tasks=[dict(t) for t in tasks])
             except SimulationError as e:
                 result = SimulationResult(success=False, error=str(e),
                                            inventory_snapshots=[], stashed_chests=[])
-            finally:
-                self.phase5_path = orig
-                tmp_path.unlink(missing_ok=True)
 
             if result and result.success:
                 return result
 
-            if self._chest_counter <= chest_count:
+            if self.chest_mgr.total_chests <= chest_count:
                 break
-            chest_count = self._chest_counter
+            chest_count = self.chest_mgr.total_chests
 
         return result or SimulationResult(
             success=False,

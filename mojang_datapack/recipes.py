@@ -116,6 +116,28 @@ def _parse_result(result_field) -> tuple[str | None, int]:
 
 
 def _parse_single_item(field, *, item_tags: dict[str, list[str]] | None) -> str | None:
+    # String shorthand (Minecraft 1.21+ format):
+    #   "minecraft:stick"              → item reference
+    #   "#minecraft:iron_tool_materials" → tag reference
+    if isinstance(field, str):
+        if field.startswith("#"):
+            tag = field.lstrip("#").split(":")[-1]
+            if item_tags and tag in item_tags and item_tags[tag]:
+                preferred = TAG_PREFERENCES.get(tag, [])
+                for pref in preferred:
+                    if pref in item_tags[tag]:
+                        return pref.split(":")[-1]
+                for candidate in item_tags[tag]:
+                    if isinstance(candidate, str) and not candidate.startswith("#"):
+                        return candidate.split(":")[-1]
+                # Nested tag (e.g. "#minecraft:planks") — recurse
+                nested = item_tags[tag][0]
+                if isinstance(nested, str) and nested.startswith("#"):
+                    return _parse_single_item(nested, item_tags=item_tags)
+                return nested.split(":")[-1] if isinstance(nested, str) else None
+            return None
+        return field.split(":")[-1]
+
     # Ingredient can be {"item": "minecraft:cobblestone"} or {"items": [...]} etc.
     if isinstance(field, dict):
         if isinstance(field.get("item"), str):
@@ -132,11 +154,18 @@ def _parse_single_item(field, *, item_tags: dict[str, list[str]] | None) -> str 
                 for candidate in item_tags[tag]:
                     if isinstance(candidate, str) and not candidate.startswith("#"):
                         return candidate.split(":")[-1]
-                return item_tags[tag][0].split(":")[-1]
+                # Nested tag (e.g. "#minecraft:planks") — recurse
+                nested = item_tags[tag][0]
+                if isinstance(nested, str) and nested.startswith("#"):
+                    return _parse_single_item(nested, item_tags=item_tags)
+                return nested.split(":")[-1] if isinstance(nested, str) else None
         if isinstance(field.get("items"), list) and field["items"] and isinstance(field["items"][0], str):
             return field["items"][0].split(":")[-1]
-    if isinstance(field, list) and field and isinstance(field[0], dict):
-        return _parse_single_item(field[0], item_tags=item_tags)
+    if isinstance(field, list) and field:
+        if isinstance(field[0], str):
+            return field[0].split(":")[-1]
+        if isinstance(field[0], dict):
+            return _parse_single_item(field[0], item_tags=item_tags)
     return None
 
 

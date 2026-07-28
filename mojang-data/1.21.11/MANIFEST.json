@@ -1,0 +1,12 @@
+{
+  "source_repo": "https://github.com/misode/mcmeta",
+  "source_ref": "1.21.11-data-json",
+  "included_paths": [
+    "data/minecraft/item",
+    "data/minecraft/recipe",
+    "data/minecraft/tags/item",
+    "data/minecraft/worldgen/placed_feature",
+    "data/minecraft/worldgen/configured_feature",
+    "data/minecraft/worldgen/biome"
+  ]
+}

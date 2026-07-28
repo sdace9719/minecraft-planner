@@ -79,6 +79,22 @@
           "400": {"description": "Pre-check failed"}
         }
       }
+    },
+    "/bot/mine": {
+      "post": {
+        "tags": ["Bot Actions"],
+        "summary": "Mine blocks by type via Baritone",
+        "description": "Uses Baritone to scan and mine blocks of the specified type until the target count is reached. Count is the TOTAL number of items to obtain (not additional — if you already have 5 and pass 8, it mines 3 more). Set count to 0 to mine all reachable blocks.",
+        "requestBody": {
+          "required": true,
+          "content": {"application/json": {"schema": {"$ref": "#/components/schemas/MineRequest"}}}
+        },
+        "responses": {
+          "200": {"description": "Mining started", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/StatusResponse"}}}},
+          "400": {"description": "Invalid request", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ErrorResponse"}}}},
+          "503": {"description": "Player not in game", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ErrorResponse"}}}}
+        }
+      }
     }
   },
   "components": {
@@ -151,6 +167,14 @@
         "properties": {
           "status": {"type": "string", "example": "ok"},
           "message": {"type": "string", "example": "Crafting started for 1x wooden_pickaxe"}
+        }
+      },
+      "MineRequest": {
+        "type": "object",
+        "required": ["block", "count"],
+        "properties": {
+          "block": {"type": "string", "description": "Block type to mine", "example": "spruce_log"},
+          "count": {"type": "integer", "description": "Total items to obtain (0 = all reachable)", "example": 8}
         }
       },
       "BulkResultResponse": {

@@ -18,4 +18,5 @@ alwaysApply: true
 - every required feature is a hard requirement. Do not work around it lazily by implementing a 'close enough' fix. If it can't be implemented, is contradictory or ambiguous, then raise appropriate concerns. If there are cases when the code can error out or fail when implementing the request, let it fail. This is the 'all or none' approach.
 - When implementing or fixing code, DO NOT REMOVE?EDIT EXISTING FEATURES. Ask for approval if it requires modifying existing code.
 - when debugging, ensure whatever changes are removed but were needed are added back. ensure none of the required features are removed while debugging.
-- create all temporary debug script for any debug/testing inside temp folder. do not run inline bash commands in shell for future tasks.  Do not execute bash commands in-line.          
+- create all temporary debug script for any debug/testing inside temp folder. do not run inline bash commands in shell for future tasks.  Do not execute bash commands in-line.
+- Do not Change anything inside MCCTP mod. This is a third party mod not meant to be touched at all          

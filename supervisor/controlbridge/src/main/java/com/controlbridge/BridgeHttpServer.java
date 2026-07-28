@@ -25,7 +25,9 @@ public class BridgeHttpServer {
     public void start() {
         // Register routes
         routes.put("GET /health", new HealthHandler());
-        routes.put("GET /swagger", new SwaggerHandler());
+        SwaggerHandler swaggerHandler = new SwaggerHandler();
+        routes.put("GET /swagger", swaggerHandler);
+        routes.put("GET /docs", swaggerHandler);
         routes.put("POST /craft", new CraftHandler());
         routes.put("POST /smelt", new SmeltHandler());
         routes.put("POST /bulk/craft", new BulkCraftHandler());
@@ -36,6 +38,7 @@ public class BridgeHttpServer {
         routes.put("GET /inventory", new InventoryHandler());
         routes.put("GET /bot/positions", new PositionsHandler());
         routes.put("POST /bot/pickup_placed_block", new PickupPlacedBlockHandler());
+        routes.put("POST /bot/mine", new BlockMineHandler());
 
         running = true;
         Thread serverThread = new Thread(this::run, "ControlBridge-HTTP");
