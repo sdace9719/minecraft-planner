@@ -390,10 +390,16 @@ class DagRouter:
                         )
                         chunks[shard_id] = shard
                         parent_to_chunks.setdefault(chunk.parent_id, []).append(shard_id)
-                        ledger[shard_id] = consume
                         new_deps.append(shard_id)
+                        # Preserve ledger capacity that was consumed before
+                        # the shard split.  Consumers may have been processed
+                        # earlier (alphabetical chunk-id ordering), so the
+                        # ledger already has deductions that must survive.
+                        old_qty = chunk.quantity
+                        already_consumed = old_qty - ledger[chunk_id]
+                        ledger[shard_id] = max(0, consume - already_consumed)
                         chunk.quantity -= consume
-                        ledger[chunk_id] = chunk.quantity
+                        ledger[chunk_id] = max(0, chunk.quantity - max(0, already_consumed - consume))
                         demand = chunk.quantity  # remaining demand for original chunk
                         remaining = demand
                         ledger[producer_chunk_id] = available - consume

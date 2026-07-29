@@ -12,6 +12,10 @@
     "quantity": 160
   },
   {
+    "name": "white_concrete_powder",
+    "quantity": 300
+  },
+  {
     "name": "spruce_stairs",
     "quantity": 124
   },
@@ -58,6 +62,10 @@
   {
     "name": "copper_block",
     "quantity": 24
+  },
+  {
+    "name": "white_wool",
+    "quantity": 16
   },
   {
     "name": "clay_ball",

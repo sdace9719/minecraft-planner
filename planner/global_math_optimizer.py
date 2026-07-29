@@ -352,7 +352,12 @@ class GlobalMathOptimizer:
             raise GlobalMathOptimizerError(f"Injected MVB chain missing root node {root_id!r}.")
         return root_id, source_usage
 
-    # ── ROI helpers ──────────────────────────────────────────────────────
+    # ===========================================================================
+    # ROI-BASED TOOL TIER OPTIMIZATION (CURRENTLY INACTIVE)
+    # These methods are intentionally kept but unused. The planner currently
+    # defaults to iron tools via _step_1b_assign_iron_tools instead.
+    # DO NOT DELETE — these will be re-enabled in the future.
+    # ===========================================================================
 
     TIER_ORDER = ("wooden", "stone", "iron", "diamond")
 
@@ -748,6 +753,276 @@ class GlobalMathOptimizer:
                 replacements.get(d, d) for d in tool_node.dependencies
             ]
 
+    def _has_iron_or_better(self, node: _Node, nodes: dict[str, _Node]) -> bool:
+        """True if *node* already depends on an iron, diamond, or netherite tool."""
+        iron_plus = ("iron_", "diamond_", "netherite_")
+        for dep_id in node.dependencies:
+            dep = nodes.get(dep_id)
+            if dep is None:
+                continue
+            if not self._is_tool(dep.name):
+                continue
+            base = dep.name.split("_mvb_")[0]
+            if base.startswith(iron_plus):
+                return True
+        return False
+
+    def _inject_unified_mvb_chain(
+        self, nodes: dict[str, _Node], tool_demands: dict[str, int]
+    ) -> dict[str, str]:
+        """Create one MVB chain that bootstraps once and crafts all iron tools.
+
+        Returns ``{tool_name: mvb_root_id}`` for wiring consumers.
+        """
+        self._mvb_counter += 1
+        suffix = f"_mvb_{self._mvb_counter}"
+
+        # Generate per-tool task lists and merge into one combined dict.
+        merged_qty: dict[str, int] = {}
+        merged_deps: dict[str, list[str]] = {}
+        merged_meta: dict[str, tuple[str, str]] = {}  # id -> (name, op)
+
+        for tool_name, qty in tool_demands.items():
+            chain = self.generator.generate_single_item_tasks(tool_name, qty)
+            for task in chain:
+                prev = merged_qty.get(task.id, 0)
+                merged_qty[task.id] = prev + task.quantity
+                merged_meta[task.id] = (task.name, task.operation_type)
+                if task.id not in merged_deps:
+                    merged_deps[task.id] = list(task.dependencies)
+
+        # Reusable workstations — cap at 1 (they are not consumed).
+        for ws_id in ("CRAFT:crafting_table", "CRAFT:furnace"):
+            if ws_id in merged_qty:
+                merged_qty[ws_id] = 1
+
+        # Build the MVB subgraph with a single suffix.
+        id_map = {tid: f"{tid}{suffix}" for tid in merged_qty}
+        root_ids = {tn: f"CRAFT:{tn}{suffix}" for tn in tool_demands}
+        for old_id, new_id in id_map.items():
+            if new_id in nodes:
+                raise GlobalMathOptimizerError(f"MVB ID collision: {new_id!r}.")
+            name, op = merged_meta[old_id]
+            rewritten_deps = [id_map[d] for d in merged_deps.get(old_id, [])]
+            nodes[new_id] = _Node(
+                id=new_id,
+                name=f"{name}{suffix}",
+                quantity=merged_qty[old_id],
+                dependencies=rewritten_deps,
+                operation_type=op,
+            )
+        for tool_name, root_id in root_ids.items():
+            if root_id not in nodes:
+                raise GlobalMathOptimizerError(f"Unified MVB chain missing root {root_id!r}.")
+        return root_ids
+
+    def _rewire_mvb_to_island(self, nodes: dict[str, _Node], suffix: str) -> None:
+        """Replace MVB bootstrap deps with island equivalents where safe.
+
+        The island has hand-gathered oak_log → 60 planks → 32 sticks →
+        1 crafting_table.  Rewiring the MVB chain's oak_planks, stick, and
+        crafting_table consumers to use island nodes eliminates the MVB
+        chain's oak_log mining.  The MVB chain keeps its own wooden_pickaxe
+        and cobblestone mining (the island pickaxe can't handle the extra
+        workload without breaking).
+        """
+        # Only rewire resources that don't add tool-durability load.
+        island_map = {
+            "oak_planks": "CRAFT:oak_planks_mvb_island",
+            "stick": "CRAFT:stick_mvb_island",
+            "crafting_table": "CRAFT:crafting_table_mvb_island",
+        }
+        mvb_to_island: dict[str, str] = {}
+        for base_name, island_id in island_map.items():
+            mvb_id = f"CRAFT:{base_name}_mvb_{suffix}"
+            if mvb_id in nodes and island_id in nodes:
+                mvb_to_island[mvb_id] = island_id
+
+        # Also wire MVB oak_log mining to use the island wooden_pickaxe.
+        mine_oak = f"MINE:oak_log_mvb_{suffix}"
+        island_pick = "CRAFT:wooden_pickaxe_mvb_island"
+        if mine_oak in nodes and island_pick in nodes:
+            if island_pick not in nodes[mine_oak].dependencies:
+                nodes[mine_oak].dependencies.append(island_pick)
+
+        if not mvb_to_island:
+            return
+
+        # Replace deps in all MVB nodes.
+        for node in list(nodes.values()):
+            if f"_mvb_{suffix}" not in node.name:
+                continue
+            new_deps = []
+            for dep in node.dependencies:
+                new_deps.append(mvb_to_island.get(dep, dep))
+            node.dependencies = new_deps
+
+        # Transfer quantities from MVB nodes to island nodes.
+        # Reusable workstations stay at 1; consumables are summed.
+        _reusable = {"crafting_table"}
+        for mvb_id, island_id in mvb_to_island.items():
+            if mvb_id not in nodes:
+                continue
+            mvb_node = nodes[mvb_id]
+            island_node = nodes[island_id]
+            base = mvb_node.name.split("_mvb_")[0]
+            if base not in _reusable:
+                island_node.quantity += mvb_node.quantity
+            mvb_node.quantity = 0  # pruned later by _prune_non_positive
+
+        # Scale up island oak_log to cover the increased plank demand.
+        island_planks = nodes.get("CRAFT:oak_planks_mvb_island")
+        island_log = nodes.get("GATHER:oak_log_mvb_island")
+        if island_planks is not None and island_log is not None:
+            island_log.quantity = math.ceil(island_planks.quantity / 4)
+
+        # Prune the MVB chain's orphaned oak_log mining node — its only
+        # consumer (oak_planks_mvb_1) was replaced by the island above.
+        orphan_log = f"MINE:oak_log_mvb_{suffix}"
+        if orphan_log in nodes:
+            nodes[orphan_log].quantity = 0
+
+    def _step_1b_assign_iron_tools(self, nodes: dict[str, _Node]) -> None:
+        """Assign iron tools to every mine/gather task via a single unified MVB chain.
+
+        One bootstrap (wooden→stone→iron) produces all iron tools — pickaxe,
+        axe, shovel — from shared oak_log / cobblestone / iron_ore.
+        """
+        target_ids = [n.id for n in nodes.values() if n.operation_type in {"mine", "gather"}]
+
+        # Collect all needed iron tools and their consumer tasks.
+        tool_consumers: dict[str, list[str]] = {}  # tool_name -> [consumer_node_id]
+        tool_classes: dict[str, str] = {}          # tool_name -> tool_class
+
+        for node_id in target_ids:
+            if node_id not in nodes:
+                continue
+            node = nodes[node_id]
+            if "_mvb_" in node.name:
+                continue
+            terminal = self._terminal_node_for_item(node.name, node.operation_type)
+            harvest = terminal.get("harvest")
+            if not isinstance(harvest, dict):
+                continue
+            if harvest.get("hand_insta_harvest_possible", False):
+                continue
+            tool_class = str(harvest.get("tool_class", "none"))
+            if tool_class == "none":
+                continue
+            if self._has_iron_or_better(node, nodes):
+                continue
+
+            tool_name = f"iron_{tool_class}"
+            tool_classes[tool_name] = tool_class
+            tool_consumers.setdefault(tool_name, []).append(node_id)
+
+        if not tool_consumers:
+            return
+
+        # Compute tool quantities from consumer workload (same formula as
+        # _step_1a_tool_recalculation).
+        tool_demands: dict[str, int] = {}
+        for tool_name, consumer_ids in tool_consumers.items():
+            workload = sum(nodes[cid].quantity for cid in consumer_ids if cid in nodes)
+            durability = self._tool_durability(tool_name)
+            tool_demands[tool_name] = math.ceil(workload / durability) if workload > 0 else 1
+
+        # Create one unified MVB chain for all tools.
+        root_ids = self._inject_unified_mvb_chain(nodes, tool_demands)
+        self._inject_mvb_fuel_deps(nodes, next(iter(root_ids.values())))
+
+        # Rewire the MVB chain to reuse island bootstrap resources instead
+        # of mining its own oak_log, planks, sticks, etc.
+        suffix = next(iter(root_ids.values())).rsplit("_mvb_", 1)[-1]
+        self._rewire_mvb_to_island(nodes, suffix)
+
+        # Wire all global consumers of the reusable crafting_table to the
+        # island's instance — only one is ever needed.
+        island_ct = "CRAFT:crafting_table_mvb_island"
+        global_ct = "CRAFT:crafting_table"
+        if global_ct in nodes and island_ct in nodes:
+            for node in list(nodes.values()):
+                if global_ct in node.dependencies:
+                    node.dependencies = [
+                        island_ct if d == global_ct else d for d in node.dependencies
+                    ]
+            nodes[global_ct].quantity = 0  # pruned later
+
+
+        # Wire every consumer to its iron tool from the shared chain.
+        for tool_name, root_id in root_ids.items():
+            for consumer_id in tool_consumers.get(tool_name, []):
+                if consumer_id not in nodes:
+                    continue
+                consumer = nodes[consumer_id]
+                consumer.dependencies = [
+                    d for d in consumer.dependencies
+                    if d not in nodes or not self._is_tool(nodes[d].name)
+                ]
+                if root_id not in consumer.dependencies:
+                    consumer.dependencies.append(root_id)
+
+    def _inject_mvb_fuel_deps(self, nodes: dict[str, _Node], mvb_root_id: str) -> None:
+        """Wire smelt→plank fuel dependencies inside a freshly created MVB chain."""
+        suffix = mvb_root_id.rsplit("_mvb_", 1)[-1]
+        smelt_ids = [
+            nid for nid, n in nodes.items()
+            if n.operation_type == "smelt" and nid.endswith(f"_mvb_{suffix}")
+        ]
+        plank_id = f"CRAFT:oak_planks_mvb_{suffix}"
+        plank = nodes.get(plank_id)
+        log_plank_id = f"MINE:oak_log_mvb_{suffix}"
+        log_plank = nodes.get(log_plank_id)
+
+        for smelt_id in smelt_ids:
+            smelt = nodes[smelt_id]
+            if plank_id not in smelt.dependencies:
+                smelt.dependencies.append(plank_id)
+            fuel_needed = math.ceil(smelt.quantity / 1.5)
+            if plank is not None:
+                plank.quantity += fuel_needed
+        if log_plank is not None and plank is not None:
+            log_plank.quantity = math.ceil(plank.quantity / 4)
+
+    def _recalc_mvb_fuel(self, nodes: dict[str, _Node]) -> None:
+        """Update MVB plank & log quantities to match current smelt fuel demand."""
+        mvb_planks = [n for n in nodes.values() if "oak_planks_mvb_" in n.name
+                      and "_mvb_island" not in n.name]
+        for plank in mvb_planks:
+            suffix = plank.name.rsplit("_mvb_", 1)[-1]
+            log_key = f"MINE:oak_log_mvb_{suffix}"
+            log_node = nodes.get(log_key)
+            if log_node is None:
+                continue
+
+            smelt_total = 0
+            for n in nodes.values():
+                if n.operation_type == "smelt" and plank.id in n.dependencies:
+                    smelt_total += n.quantity
+            fuel_for_smelt = math.ceil(smelt_total / 1.5) if smelt_total > 0 else 0
+
+            non_fuel_plan = 0
+            for n in nodes.values():
+                if n.id == plank.id or n.operation_type == "smelt":
+                    continue
+                if plank.id not in n.dependencies:
+                    continue
+                base = n.name.split("_mvb_")[0]
+                recipe = self._blueprint_recipe_node(base, n.operation_type)
+                ingredients = recipe.get("ingredients", {})
+                ing_per_run = int(ingredients.get("oak_planks", 0))
+                if ing_per_run <= 0:
+                    continue
+                bp_task = self.generator._resolve_node(base)
+                recipe_yield = self.generator._recipe_yield_for(bp_task)
+                runs = math.ceil(n.quantity / recipe_yield)
+                non_fuel_plan += runs * ing_per_run
+
+            new_plank_qty = non_fuel_plan + fuel_for_smelt
+            if new_plank_qty != plank.quantity:
+                plank.quantity = new_plank_qty
+                log_node.quantity = math.ceil(new_plank_qty / 4)
+
     def _step_1b_roi_and_mvb(self, nodes: dict[str, _Node]) -> None:
         """Discovery-weighted ROI: select optimal tool tier for every mine/gather task."""
         target_ids = [node.id for node in nodes.values() if node.operation_type in {"mine", "gather"}]
@@ -1086,9 +1361,10 @@ class GlobalMathOptimizer:
         # Create primitive MVB island for bootstrapping before ROI runs.
         self._mvb_island = self._create_mvb_island(nodes) if nodes else {}
 
-        self._step_1b_roi_and_mvb(nodes)         # Inject MVB tool chains where ROI justifies
+        self._step_1b_assign_iron_tools(nodes)     # Default to iron tools for all mine/gather tasks
         self._step_1c_furnace_deltas(nodes)      # Adjust furnace count
         self._step_1a_tool_recalculation(nodes)   # Recalculate tool quantities
+        self._recalc_mvb_fuel(nodes)              # Update MVB plank/log for new smelt quantities
         self._step_1a2_ingredient_recalc(nodes)   # Recalculate global ingredient quantities
         self._step_1d_fuel_deltas(nodes)         # Per-chunk fuel math (may increase oak_log workload)
         self._step_1a_tool_recalculation(nodes)   # Recalculate MVB tool quantities for new workloads

@@ -2,7 +2,7 @@
   {
     "id": "CRAFT:oak_planks",
     "name": "oak_planks",
-    "quantity": 1801,
+    "quantity": 1793,
     "dependencies": [
       "MINE:oak_log"
     ],
@@ -11,7 +11,7 @@
   {
     "id": "MINE:oak_log",
     "name": "oak_log",
-    "quantity": 466,
+    "quantity": 463,
     "dependencies": [],
     "operation_type": "mine"
   },
@@ -49,7 +49,7 @@
   {
     "id": "CRAFT:stick",
     "name": "stick",
-    "quantity": 61,
+    "quantity": 60,
     "dependencies": [
       "CRAFT:oak_planks"
     ],
@@ -88,65 +88,9 @@
   {
     "id": "MINE:sand",
     "name": "sand",
-    "quantity": 512,
+    "quantity": 360,
     "dependencies": [],
     "operation_type": "mine"
-  },
-  {
-    "id": "CRAFT:white_concrete_powder",
-    "name": "white_concrete_powder",
-    "quantity": 300,
-    "dependencies": [
-      "MINE:gravel",
-      "MINE:sand",
-      "CRAFT:white_dye"
-    ],
-    "operation_type": "craft"
-  },
-  {
-    "id": "MINE:gravel",
-    "name": "gravel",
-    "quantity": 302,
-    "dependencies": [],
-    "operation_type": "mine"
-  },
-  {
-    "id": "CRAFT:white_dye",
-    "name": "white_dye",
-    "quantity": 38,
-    "dependencies": [
-      "CRAFT:bone_meal"
-    ],
-    "operation_type": "craft"
-  },
-  {
-    "id": "CRAFT:bone_meal",
-    "name": "bone_meal",
-    "quantity": 38,
-    "dependencies": [
-      "SWORD:bone"
-    ],
-    "operation_type": "craft"
-  },
-  {
-    "id": "SWORD:bone",
-    "name": "bone",
-    "quantity": 13,
-    "dependencies": [
-      "CRAFT:wooden_sword"
-    ],
-    "operation_type": "sword"
-  },
-  {
-    "id": "CRAFT:wooden_sword",
-    "name": "wooden_sword",
-    "quantity": 1,
-    "dependencies": [
-      "CRAFT:oak_planks",
-      "CRAFT:stick",
-      "CRAFT:crafting_table"
-    ],
-    "operation_type": "craft"
   },
   {
     "id": "CRAFT:spruce_stairs",
@@ -270,6 +214,13 @@
     "operation_type": "mine"
   },
   {
+    "id": "MINE:gravel",
+    "name": "gravel",
+    "quantity": 150,
+    "dependencies": [],
+    "operation_type": "mine"
+  },
+  {
     "id": "MINE:dirt",
     "name": "dirt",
     "quantity": 128,
@@ -336,22 +287,6 @@
       "CRAFT:stone_pickaxe"
     ],
     "operation_type": "mine"
-  },
-  {
-    "id": "CRAFT:white_wool",
-    "name": "white_wool",
-    "quantity": 16,
-    "dependencies": [
-      "GATHER:string"
-    ],
-    "operation_type": "craft"
-  },
-  {
-    "id": "GATHER:string",
-    "name": "string",
-    "quantity": 64,
-    "dependencies": [],
-    "operation_type": "gather"
   },
   {
     "id": "CRAFT:andesite",

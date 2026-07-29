@@ -200,6 +200,7 @@ class CacheSimulator:
         self._generator = ItemTaskGenerator()
         self.chest_mgr = ChestManager()
         self._chest_inject_enabled = True
+        self.final_targets: set[str] = set()  # items that must never be tossed
 
     @property
     def _chest_counter(self) -> int:
@@ -223,8 +224,8 @@ class CacheSimulator:
         return data.get("blueprints", data)
 
     def _find_tool_requirement(self, task: dict) -> str | None:
-        """Return the tool item name this mine/gather task requires, or None."""
-        if task["operation_type"] not in ("mine", "gather"):
+        """Return the tool item name this task requires, or None."""
+        if task["operation_type"] not in ("mine", "gather", "sword"):
             return None
         deps = task.get("dependencies", [])
         for d in deps:
@@ -259,14 +260,20 @@ class CacheSimulator:
     def _toss(self, inv: Inventory, tasks: list[dict], task_idx: int) -> list[dict]:
         """Toss items with zero future demand across all remaining tasks.
 
+        Final output items (from input targets) are never tossed — they
+        are stashed to chests when inventory pressure builds.
+
         Returns list of toss snapshot dicts, each with ``toss`` marker.
         """
+        import re as _re
         toss_snapshots: list[dict] = []
         for i, s in enumerate(inv.slots):
             if s is None:
                 continue
             item = s["item"]
-            if _is_tool(item):
+            # Never toss final output items requested by the user.
+            base = _re.sub(r'_mvb_(?:\d+|island)', '', item)
+            if base in self.final_targets:
                 continue
             needed = False
             for j in range(task_idx, len(tasks)):
@@ -332,21 +339,32 @@ class CacheSimulator:
 
         # Never stash items needed imminently.  Reduce the protection window
         # iteratively until 8 slots can be cleared, down to a minimum of 5.
+        # Items with pri=2**60 (never needed again — final outputs or
+        # obsolete intermediates) are always eligible.
         stashed: list[tuple[int, int, str]] = []
         for window in (50, 45, 40, 35, 30, 25, 20, 15, 10, 5):
             min_window = task_idx + window
             candidates = [(p, i, it) for p, i, it in slot_priority
-                          if p != 2**60 and p > min_window]
+                          if p > min_window]
             to_take = min(len(candidates), 8)
             if to_take >= 8 or window == 5:
                 stashed = candidates[:to_take]
                 break
 
         if not stashed:
-            raise SimulationError(
-                f"Stash failed at task index {task_idx}: {inv.used_slots} slots "
-                f"occupied but no items can be evicted (all needed within 5 tasks)."
-            )
+            # No items meet the normal protection window.  Fall back to
+            # stashing any item with a future need (window=0).  Auto-retrieve
+            # via _consume() will bring items back when the needing task runs.
+            candidates = [(p, i, it) for p, i, it in slot_priority
+                          if p > task_idx]
+            to_take = min(len(candidates), 8)
+            if to_take > 0:
+                stashed = candidates[:to_take]
+        if not stashed:
+            # All items are needed by the current task only (pri=2**60) or
+            # are tools.  No candidates exist.  Let the simulation continue
+            # — consumption will free slots for production.
+            return None, False, []
 
         # Find an existing chest to reuse, or create one.
         chest_id = self.chest_mgr.find_available()
@@ -388,22 +406,32 @@ class CacheSimulator:
         return 0
 
     def _task_needs_item(self, task: dict, item: str) -> bool:
-        """Check if *task* consumes *item* as recipe ingredient, fuel, or tool."""
+        """Check if *task* consumes *item* as ingredient, fuel, tool, or workstation."""
         op = task["operation_type"]
         name = task["name"]
         if op == "smelt" and item == "oak_planks":
             return True
-        # Match both exact name and MVB island variants.
-        base_item = item
-        if base_item.endswith("_mvb_island"):
-            base_item = base_item[:-len("_mvb_island")]
+        # Strip MVB suffixes to get the base item name.  A furnace_mvb_1
+        # is still a furnace — any task needing a furnace needs this too.
+        import re as _re
+        base_item = _re.sub(r'_mvb_(?:\d+|island)', '', item)
         for bp in self.blueprints.get(name, []):
             if bp.get("item") == name and bp.get("operation") == op:
                 ings = bp.get("ingredients", {})
                 if item in ings or base_item in ings:
                     return True
         tool = self._find_tool_requirement(task)
-        return tool == item or tool == base_item
+        if tool == item or tool == base_item:
+            return True
+        # Check the task's own dependency list for workstations and
+        # prerequisites (e.g. crafting_table, furnace) that aren't
+        # recipe ingredients but are still required.
+        for dep in task.get("dependencies", []):
+            dep_name = dep.split(":")[-1] if ":" in dep else dep
+            dep_name = dep_name.rsplit("_chunk_", 1)[0]
+            if dep_name == item or dep_name == base_item:
+                return True
+        return False
 
     def _retrieve(self, inv: Inventory, chest_id: str) -> None:
         results = self.chest_mgr.retrieve_from_chest(chest_id)

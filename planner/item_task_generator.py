@@ -311,13 +311,17 @@ class ItemTaskGenerator:
                         f"Task {item!r} has unresolved dependency ID {dep_id!r}."
                     )
 
+        # Workstations that are reused, not consumed — always quantity 1.
+        _reusable = {"crafting_table"}
+
         output: list[Task] = []
         for node_id, (name, op) in task_meta.items():
+            qty = 1 if name in _reusable else int(task_qty[node_id])
             output.append(
                 Task(
                     id=node_id,
                     name=name,
-                    quantity=int(task_qty[node_id]),
+                    quantity=qty,
                     dependencies=list(task_deps.get(node_id, [])),
                     operation_type=op,
                 )

@@ -297,6 +297,11 @@ def main() -> None:
     # 3. Phase 6 — full simulation with chest overhead
     from planner.final_checker import CacheSimulator
     sim = CacheSimulator()
+    # Load input targets so final output items are never tossed.
+    input_path = ROOT / "tests" / "input_materials_test.json"
+    if input_path.exists():
+        raw = json.loads(input_path.read_text(encoding="utf-8"))
+        sim.final_targets = {t["name"] for t in raw}
     result = sim.simulate_with_chest_overhead()
     print(f"Phase 6: success={result.success}, chests={sim._chest_counter}, "
           f"snapshots={len(result.inventory_snapshots)}")
